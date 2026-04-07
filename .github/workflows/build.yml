@@ -63,6 +63,7 @@ jobs:
         cmake -G "Ninja" \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/mingw64 \
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
           ..
         
         ninja
