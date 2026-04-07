@@ -59,10 +59,19 @@ jobs:
         # 创建构建目录
         mkdir -p build && cd build
         
+        # 设置 PKG_CONFIG_PATH 以找到 libusb
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        
+        # 验证 libusb 已安装
+        pkg-config --cflags --libs libusb-1.0 || echo "Warning: pkg-config check failed"
+        
         # CMake 配置和构建 (MinGW64)
         cmake -G "Ninja" \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/mingw64 \
+          -DCMAKE_PREFIX_PATH=/mingw64 \
+          -DLIBUSB_INCLUDE_DIR=/mingw64/include/libusb-1.0 \
+          -DLIBUSB_LIBRARY=/mingw64/lib/libusb-1.0.dll.a \
           -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
           ..
         
@@ -80,6 +89,9 @@ jobs:
         set -e
         echo "=== Building mfoc from source ==="
         
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        
         # 克隆 mfoc
         git clone --depth 1 https://github.com/nfc-tools/mfoc.git
         cd mfoc
@@ -88,7 +100,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64
+        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
         make -j$(nproc)
         make install
         
@@ -100,6 +112,9 @@ jobs:
         set -e
         echo "=== Building mfcuk from source ==="
         
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        
         # 克隆 mfcuk
         git clone --depth 1 https://github.com/nfc-tools/mfcuk.git
         cd mfcuk
@@ -108,7 +123,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64
+        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
         make -j$(nproc)
         make install
         
@@ -120,6 +135,9 @@ jobs:
         set -e
         echo "=== Building mfoc-hardnested from source ==="
         
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        
         # 克隆 mfoc-hardnested
         git clone --depth 1 https://github.com/nfc-tools/mfoc-hardnested.git
         cd mfoc-hardnested
@@ -128,7 +146,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64
+        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
         make -j$(nproc)
         
         echo "=== mfoc-hardnested built successfully ==="
@@ -160,6 +178,7 @@ jobs:
         cp -v /mingw64/bin/libusb-1.0.dll nfc-bin/ 2>/dev/null || true
         cp -v /mingw64/bin/libgcc_s_seh-1.dll nfc-bin/ 2>/dev/null || true
         cp -v /mingw64/bin/libwinpthread-1.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw64/bin/libstdc++-6.dll nfc-bin/ 2>/dev/null || true
         
         # 创建 mfdetect（使用 mfoc 的检测功能）
         cp nfc-bin/mfoc.exe nfc-bin/mfdetect.exe 2>/dev/null || true
