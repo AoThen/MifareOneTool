@@ -70,8 +70,8 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/mingw64 \
           -DCMAKE_PREFIX_PATH=/mingw64 \
-          -DLIBUSB_INCLUDE_DIR=/mingw64/include/libusb-1.0 \
-          -DLIBUSB_LIBRARY=/mingw64/lib/libusb-1.0.dll.a \
+          -DLIBUSB_INCLUDE_DIRS=/mingw64/include/libusb-1.0 \
+          -DLIBUSB_LIBRARIES=/mingw64/lib/libusb-1.0.dll.a \
           -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
           ..
         
