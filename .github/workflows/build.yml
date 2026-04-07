@@ -26,19 +26,19 @@ jobs:
       run: nuget restore MifareOneTool.sln
 
     # ============================================================
-    # 从源码编译 NFC 工具
+    # 从源码编译 NFC 工具 (使用 MINGW64 因为 MINGW32 缺少关键包)
     # ============================================================
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW32
+        msystem: MINGW64
         update: true
         install: >-
-          mingw-w64-i686-toolchain
-          mingw-w64-i686-cmake
-          mingw-w64-i686-ninja
-          mingw-w64-i686-libusb-win32
-          mingw-w64-i686-libusb-compat
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-libusb
+          mingw-w64-x86_64-libusb-compat
           git
           make
           autoconf
@@ -59,12 +59,10 @@ jobs:
         # 创建构建目录
         mkdir -p build && cd build
         
-        # CMake 配置和构建 (MinGW32)
+        # CMake 配置和构建 (MinGW64)
         cmake -G "Ninja" \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX=/mingw32 \
-          -DLIBUSB_INCLUDE_DIR=/mingw32/include/libusb-1.0 \
-          -DLIBUSB_LIBRARIES=/mingw32/lib/libusb-1.0.dll.a \
+          -DCMAKE_INSTALL_PREFIX=/mingw64 \
           ..
         
         ninja
@@ -73,7 +71,7 @@ jobs:
         echo "=== libnfc built successfully ==="
         
         # 列出生成的工具
-        ls -la utils/
+        ls -la utils/ 2>/dev/null || ls -la .
 
     - name: Build mfoc from source
       shell: msys2 {0}
@@ -89,7 +87,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        ./configure --prefix=/mingw64
         make -j$(nproc)
         make install
         
@@ -109,7 +107,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        ./configure --prefix=/mingw64
         make -j$(nproc)
         make install
         
@@ -129,7 +127,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        ./configure --prefix=/mingw64
         make -j$(nproc)
         
         echo "=== mfoc-hardnested built successfully ==="
@@ -157,10 +155,10 @@ jobs:
         cp -v mfoc-hardnested/src/mfoc.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
         
         # 复制必要的 DLL
-        cp -v /mingw32/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
-        cp -v /mingw32/bin/libusb-1.0.dll nfc-bin/ 2>/dev/null || true
-        cp -v /mingw32/bin/libgcc_s_dw2-1.dll nfc-bin/ 2>/dev/null || true
-        cp -v /mingw32/bin/libwinpthread-1.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw64/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw64/bin/libusb-1.0.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw64/bin/libgcc_s_seh-1.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw64/bin/libwinpthread-1.dll nfc-bin/ 2>/dev/null || true
         
         # 创建 mfdetect（使用 mfoc 的检测功能）
         cp nfc-bin/mfoc.exe nfc-bin/mfdetect.exe 2>/dev/null || true
