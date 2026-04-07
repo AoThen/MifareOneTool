@@ -281,20 +281,22 @@ namespace MifareOneTool
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
-            Process p = Process.Start(psi);
-            p.WaitForExit();
-            string rawStr = p.StandardOutput.ReadToEnd();
-            string uid;
-            string pattern = @"UID\s\(NFCID1\)\: ([0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2})";
-            if (Regex.IsMatch(rawStr, pattern))
+            using (Process p = Process.Start(psi))
             {
-                uid = Regex.Match(rawStr, pattern).Captures[0].Value.Replace(" ", "").Replace("UID(NFCID1):", ""); ;
+                p.WaitForExit();
+                string rawStr = p.StandardOutput.ReadToEnd();
+                string uid;
+                string pattern = @"UID\s\(NFCID1\)\: ([0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2}\s\s[0-9A-Fa-f]{2})";
+                if (Regex.IsMatch(rawStr, pattern))
+                {
+                    uid = Regex.Match(rawStr, pattern).Captures[0].Value.Replace(" ", "").Replace("UID(NFCID1):", ""); ;
+                }
+                else
+                {
+                    uid = "";
+                }
+                return uid;
             }
-            else
-            {
-                uid = "";
-            }
-            return uid;
         }
         private void LoadUidKey(string uid)
         {

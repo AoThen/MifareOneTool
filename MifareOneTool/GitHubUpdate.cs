@@ -23,20 +23,23 @@ namespace MifareOneTool
                 //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                 var request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/" + GitHubR + "/releases/latest");
-                var response = (HttpWebResponse)request.GetResponse();
-                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                JObject jo = JObject.Parse(responseString);
-                if (jo.GetValue("message") == null)
+                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
-                    dynamic json = Newtonsoft.Json.Linq.JToken.Parse(responseString) as dynamic;
-                    if (json.prerelease == false)
+                    string responseString = reader.ReadToEnd();
+                    JObject jo = JObject.Parse(responseString);
+                    if (jo.GetValue("message") == null)
                     {
-                        this.remoteVersion = (string)json.tag_name;
+                        dynamic json = Newtonsoft.Json.Linq.JToken.Parse(responseString) as dynamic;
+                        if (json.prerelease == false)
+                        {
+                            this.remoteVersion = (string)json.tag_name;
+                        }
                     }
-                }
-                else
-                {
-                    Console.Error.WriteLine("GitHub更新失效");
+                    else
+                    {
+                        Console.Error.WriteLine("GitHub更新失效");
+                    }
                 }
             }
             catch (Exception e)
@@ -50,19 +53,22 @@ namespace MifareOneTool
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/" + GitHubR + "/releases/latest");
-                var response = (HttpWebResponse)request.GetResponse();
-                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                JObject jo = JObject.Parse(responseString);
-                if (jo.GetValue("message") == null)
+                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
-                    dynamic json = Newtonsoft.Json.Linq.JToken.Parse(responseString) as dynamic;
-                    if(json.prerelease==false){
-                        this.remoteVersion=(string)json.tag_name;
+                    string responseString = reader.ReadToEnd();
+                    JObject jo = JObject.Parse(responseString);
+                    if (jo.GetValue("message") == null)
+                    {
+                        dynamic json = Newtonsoft.Json.Linq.JToken.Parse(responseString) as dynamic;
+                        if(json.prerelease==false){
+                            this.remoteVersion=(string)json.tag_name;
+                        }
                     }
-                }
-                else
-                {
-                    Console.Error.WriteLine("GitHub更新失效");
+                    else
+                    {
+                        Console.Error.WriteLine("GitHub更新失效");
+                    }
                 }
             }
             catch (Exception ex)
