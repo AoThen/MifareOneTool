@@ -37,13 +37,14 @@ jobs:
           mingw-w64-i686-toolchain
           mingw-w64-i686-cmake
           mingw-w64-i686-ninja
-          mingw-w64-i686-libusb
-          mingw-w64-i686-libusb-compat-git
+          mingw-w64-i686-libusb-win32
+          mingw-w64-i686-libusb-compat
           git
           make
           autoconf
           automake
           libtool
+          pkg-config
 
     - name: Build libnfc from source
       shell: msys2 {0}
