@@ -562,4 +562,76 @@
   <data name="错误" xml:space="preserve">
     <value>错误</value>
   </data>
+  <data name="_有差异" xml:space="preserve">
+    <value>差异</value>
+  </data>
+  <data name="_相同" xml:space="preserve">
+    <value>相同</value>
+  </data>
+  <data name="差异" xml:space="preserve">
+    <value>差异</value>
+  </data>
+  <data name="块" xml:space="preserve">
+    <value>块</value>
+  </data>
+  <data name="对比完成_共_0_个块不同_共_1_个字节不同" xml:space="preserve">
+    <value>对比完成，共 {0} 个块不同，共 {1} 个字节不同。</value>
+  </data>
+  <data name="文本视图" xml:space="preserve">
+    <value>文本视图</value>
+  </data>
+  <data name="可视化视图" xml:space="preserve">
+    <value>可视化视图</value>
+  </data>
+  <data name="确认操作" xml:space="preserve">
+    <value>确认操作</value>
+  </data>
+  <data name="请输入确认码以继续" xml:space="preserve">
+    <value>请输入确认码以继续：</value>
+  </data>
+  <data name="确认码错误_操作已取消" xml:space="preserve">
+    <value>确认码错误，操作已取消。</value>
+  </data>
+  <data name="卡片信息预览" xml:space="preserve">
+    <value>卡片信息预览</value>
+  </data>
+  <data name="UID" xml:space="preserve">
+    <value>UID</value>
+  </data>
+  <data name="BCC" xml:space="preserve">
+    <value>BCC</value>
+  </data>
+  <data name="状态" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="密钥A" xml:space="preserve">
+    <value>密钥A</value>
+  </data>
+  <data name="密钥B" xml:space="preserve">
+    <value>密钥B</value>
+  </data>
+  <data name="访问控制" xml:space="preserve">
+    <value>访问控制</value>
+  </data>
+  <data name="正常" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="异常" xml:space="preserve">
+    <value>异常</value>
+  </data>
+  <data name="暗色主题" xml:space="preserve">
+    <value>暗色主题</value>
+  </data>
+  <data name="亮色主题" xml:space="preserve">
+    <value>亮色主题</value>
+  </data>
+  <data name="主题设置" xml:space="preserve">
+    <value>主题设置</value>
+  </data>
+  <data name="需要重启软件以应用主题更改" xml:space="preserve">
+    <value>需要重启软件以应用主题更改。</value>
+  </data>
+  <data name="该操作将会格式化M1卡_清除所有数据" xml:space="preserve">
+    <value>该操作将会格式化M1卡，清除所有数据！此操作不可恢复！</value>
+  </data>
 </root>

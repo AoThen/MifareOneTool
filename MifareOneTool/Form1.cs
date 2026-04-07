@@ -205,6 +205,10 @@ namespace MifareOneTool
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // 初始化并应用主题
+            ThemeManager.Initialize();
+            ThemeManager.ApplyTheme(this);
+
             logAppend(Resources._软件版本 + Assembly.GetExecutingAssembly().GetName().Version.ToString());
             localVersionLabel.Text = Resources.本地版本 + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Directory.CreateDirectory("auto_keys");
@@ -217,6 +221,7 @@ namespace MifareOneTool
             checkBoxHardLowCost.Checked = Properties.Settings.Default.HardLowCost;
             checkBoxNewScan.Checked = Properties.Settings.Default.NewScan;
             checkBoxCuidKeyOver.Checked = Properties.Settings.Default.CuidKeyOver;
+            checkBoxDarkTheme.Checked = Properties.Settings.Default.DarkTheme;
             if (Properties.Settings.Default.DefIsAdv)
             {
                 tabControl1.SelectedIndex = 1;
@@ -640,10 +645,31 @@ namespace MifareOneTool
             b.ReportProgress(100, Resources._运行完毕);
         }
 
+        private bool ConfirmDangerousOperation(string operationName)
+        {
+            // 生成随机确认码
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] confirmBytes = new byte[2];
+            rng.GetBytes(confirmBytes);
+            string confirmCode = confirmBytes[0].ToString("X2") + confirmBytes[1].ToString("X2");
+
+            string message = string.Format("{0}\n\n{1}{2}", operationName, Resources.请输入确认码以继续, confirmCode);
+            string input = Interaction.InputBox(message, Resources.确认操作, "", -1, -1).Trim().ToUpper();
+
+            if (input != confirmCode)
+            {
+                MessageBox.Show(Resources.确认码错误_操作已取消, Resources.确认操作, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
+
         private void buttonUidFormat_Click(object sender, EventArgs e)
         {
             if (lprocess) { MessageBox.Show(Resources.有任务运行中_不可执行, Resources.设备忙, MessageBoxButtons.OK, MessageBoxIcon.Warning); return; } Form1.ActiveForm.Text = Resources.MifareOne_Tool_运行中;
             if (MessageBox.Show(Resources.该操作将会清空UID卡内全部数据_清空后不可恢复_请确认是否, Resources.危险操作警告, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+            { return; }
+            if (!ConfirmDangerousOperation(Resources.该操作将会清空UID卡内全部数据_清空后不可恢复_请确认是否))
             { return; }
             BackgroundWorker bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(format_uid);
@@ -969,6 +995,8 @@ namespace MifareOneTool
             if (lprocess) { MessageBox.Show(Resources.有任务运行中_不可执行, Resources.设备忙, MessageBoxButtons.OK, MessageBoxIcon.Warning); return; } Form1.ActiveForm.Text = Resources.MifareOne_Tool_运行中;
             if (MessageBox.Show(Resources.该操作将会锁死UFUID卡片_锁死后不可恢复_无法再次更改0, Resources.危险操作警告, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
             { return; }
+            if (!ConfirmDangerousOperation(Resources.该操作将会锁死UFUID卡片_锁死后不可恢复_无法再次更改0))
+            { return; }
             BackgroundWorker bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(lock_ufuid);
             bgw.WorkerReportsProgress = true;
@@ -1005,7 +1033,10 @@ namespace MifareOneTool
         private void buttonMfFormat_Click(object sender, EventArgs e)
         {
             if (lprocess) { MessageBox.Show(Resources.有任务运行中_不可执行, Resources.设备忙, MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
-            if (keymfd == "") { MessageBox.Show(Resources.未选择有效key_mfd, Resources.无密钥, MessageBoxButtons.OK, MessageBoxIcon.Error); return; } Form1.ActiveForm.Text = Resources.MifareOne_Tool_运行中;
+            if (keymfd == "") { MessageBox.Show(Resources.未选择有效key_mfd, Resources.无密钥, MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            if (!ConfirmDangerousOperation(Resources.该操作将会格式化M1卡_清除所有数据))
+            { return; }
+            Form1.ActiveForm.Text = Resources.MifareOne_Tool_运行中;
             string rmfd = keymfd;
             string kt = "A";
             if (checkBoxAutoABN.Checked && keymfd != "")
@@ -1228,6 +1259,21 @@ namespace MifareOneTool
         {
             FormHTool fht = new FormHTool();
             fht.Show();
+        }
+
+        private void buttonCardInfo_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.CheckFileExists = true;
+            ofd.Filter = Resources.MFD文件_mfd_dump;
+            ofd.Title = Resources.请选择需要打开的MFD文件;
+            ofd.Multiselect = false;
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                FormCardInfo fci = new FormCardInfo();
+                fci.LoadCard(ofd.FileName);
+                fci.ShowDialog();
+            }
         }
 
         private void buttonECheckEncrypt_Click(object sender, EventArgs e)
@@ -1523,6 +1569,13 @@ namespace MifareOneTool
         private void checkBoxCuidKeyOver_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.CuidKeyOver = checkBoxCuidKeyOver.Checked;
+        }
+
+        private void checkBoxDarkTheme_CheckedChanged(object sender, EventArgs e)
+        {
+            ThemeManager.IsDarkTheme = checkBoxDarkTheme.Checked;
+            ThemeManager.ApplyTheme(this);
+            MessageBox.Show(Resources.需要重启软件以应用主题更改, Resources.主题设置, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void buttonMFF08_Click(object sender, EventArgs e)

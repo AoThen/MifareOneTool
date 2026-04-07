@@ -34,12 +34,11 @@ namespace MifareOneTool
 
         public string GetArg()
         {
+            // mfoc-hardnested 参数格式: -K <key> -D <block>:<type> -d <block>:<type>
             string arg = "";
-            arg += keyEdit.Text.ToUpper() + " ";
-            arg += getBlock(Convert.ToInt32(sector1.Text.Trim())).ToString() + " ";
-            arg += (radioKey1A.Checked ? "A" : "B") + " ";
-            arg += getBlock(Convert.ToInt32(sector2.Text.Trim())).ToString() + " ";
-            arg += radioKey2A.Checked ? "A" : "B";
+            arg += "-K " + keyEdit.Text.ToUpper() + " ";
+            arg += "-D " + getBlock(Convert.ToInt32(sector1.Text.Trim())).ToString() + ":" + (radioKey1A.Checked ? "A" : "B") + " ";
+            arg += "-d " + getBlock(Convert.ToInt32(sector2.Text.Trim())).ToString() + ":" + (radioKey2A.Checked ? "A" : "B");
             return arg;
         }
 

@@ -132,6 +132,8 @@
             this.checkBoxAutoLoadKey = new System.Windows.Forms.CheckBox();
             this.checkBoxWriteProtect = new System.Windows.Forms.CheckBox();
             this.checkBoxCuidKeyOver = new System.Windows.Forms.CheckBox();
+            this.checkBoxDarkTheme = new System.Windows.Forms.CheckBox();
+            this.checkBoxDarkTheme = new System.Windows.Forms.CheckBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
             this.numericCLIFontSize = new System.Windows.Forms.NumericUpDown();
@@ -1090,6 +1092,7 @@
             this.flowLayoutPanel2.Controls.Add(this.checkBoxAutoLoadKey);
             this.flowLayoutPanel2.Controls.Add(this.checkBoxWriteProtect);
             this.flowLayoutPanel2.Controls.Add(this.checkBoxCuidKeyOver);
+            this.flowLayoutPanel2.Controls.Add(this.checkBoxDarkTheme);
             this.flowLayoutPanel2.ForeColor = System.Drawing.Color.DodgerBlue;
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             // 
@@ -1123,6 +1126,13 @@
             this.checkBoxCuidKeyOver.Name = "checkBoxCuidKeyOver";
             this.checkBoxCuidKeyOver.UseVisualStyleBackColor = true;
             this.checkBoxCuidKeyOver.CheckedChanged += new System.EventHandler(this.checkBoxCuidKeyOver_CheckedChanged);
+            // 
+            // checkBoxDarkTheme
+            // 
+            resources.ApplyResources(this.checkBoxDarkTheme, "checkBoxDarkTheme");
+            this.checkBoxDarkTheme.Name = "checkBoxDarkTheme";
+            this.checkBoxDarkTheme.UseVisualStyleBackColor = true;
+            this.checkBoxDarkTheme.CheckedChanged += new System.EventHandler(this.checkBoxDarkTheme_CheckedChanged);
             // 
             // groupBox12
             // 
@@ -1628,6 +1638,7 @@
         private System.Windows.Forms.CheckBox checkBoxMultiDev;
         private System.Windows.Forms.ToolStripStatusLabel curDevice;
         private System.Windows.Forms.CheckBox checkBoxCuidKeyOver;
+        private System.Windows.Forms.CheckBox checkBoxDarkTheme;
         private System.Windows.Forms.Button buttonMFF08;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label7;

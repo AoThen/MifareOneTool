@@ -1,4 +1,4 @@
-﻿namespace MifareOneTool
+namespace MifareOneTool
 {
     partial class FormDiff
     {
@@ -35,9 +35,17 @@
             this.button3 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPageText = new System.Windows.Forms.TabPage();
+            this.tabPageVisual = new System.Windows.Forms.TabPage();
+            this.dataGridViewDiff = new System.Windows.Forms.DataGridView();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.tabPageText.SuspendLayout();
+            this.tabPageVisual.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDiff)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,11 +93,48 @@
             this.flowLayoutPanel1.Controls.Add(this.button2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             // 
+            // tabControl
+            // 
+            resources.ApplyResources(this.tabControl, "tabControl");
+            this.tabControl.Controls.Add(this.tabPageText);
+            this.tabControl.Controls.Add(this.tabPageVisual);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
+            // 
+            // tabPageText
+            // 
+            this.tabPageText.Controls.Add(this.richTextBox1);
+            resources.ApplyResources(this.tabPageText, "tabPageText");
+            this.tabPageText.Name = "tabPageText";
+            this.tabPageText.UseVisualStyleBackColor = true;
+            // 
+            // tabPageVisual
+            // 
+            this.tabPageVisual.Controls.Add(this.dataGridViewDiff);
+            resources.ApplyResources(this.tabPageVisual, "tabPageVisual");
+            this.tabPageVisual.Name = "tabPageVisual";
+            this.tabPageVisual.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewDiff
+            // 
+            this.dataGridViewDiff.AllowUserToAddRows = false;
+            this.dataGridViewDiff.AllowUserToDeleteRows = false;
+            this.dataGridViewDiff.AllowUserToResizeRows = false;
+            resources.ApplyResources(this.dataGridViewDiff, "dataGridViewDiff");
+            this.dataGridViewDiff.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridViewDiff.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridViewDiff.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDiff.Name = "dataGridViewDiff";
+            this.dataGridViewDiff.ReadOnly = true;
+            this.dataGridViewDiff.RowHeadersVisible = false;
+            this.dataGridViewDiff.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridViewDiff_CellFormatting);
+            // 
             // flowLayoutPanel2
             // 
             resources.ApplyResources(this.flowLayoutPanel2, "flowLayoutPanel2");
             this.flowLayoutPanel2.Controls.Add(this.tableLayoutPanel1);
-            this.flowLayoutPanel2.Controls.Add(this.richTextBox1);
+            this.flowLayoutPanel2.Controls.Add(this.tabControl);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             // 
             // FormDiff
@@ -98,13 +143,16 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flowLayoutPanel2);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Name = "FormDiff";
             this.Load += new System.EventHandler(this.FormDiff_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
+            this.tabPageText.ResumeLayout(false);
+            this.tabPageVisual.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDiff)).EndInit();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
@@ -121,5 +169,9 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPageText;
+        private System.Windows.Forms.TabPage tabPageVisual;
+        private System.Windows.Forms.DataGridView dataGridViewDiff;
     }
 }

@@ -4,6 +4,11 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  LIBNFC_VERSION: "libnfc-1.8.0"
+  MFOC_VERSION: "0.10.7"
+  MFCUK_VERSION: "0.3.8"
+
 jobs:
   build:
     runs-on: windows-latest
@@ -20,17 +25,214 @@ jobs:
     - name: Restore NuGet Packages
       run: nuget restore MifareOneTool.sln
 
-    - name: Build Release
+    # ============================================================
+    # 从源码编译 NFC 工具
+    # ============================================================
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW32
+        update: true
+        install: >-
+          mingw-w64-i686-toolchain
+          mingw-w64-i686-cmake
+          mingw-w64-i686-ninja
+          mingw-w64-i686-libusb
+          mingw-w64-i686-libusb-compat-git
+          git
+          make
+          autoconf
+          automake
+          libtool
+
+    - name: Build libnfc from source
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Building libnfc from source ==="
+        
+        # 克隆 libnfc
+        git clone --depth 1 https://github.com/nfc-tools/libnfc.git
+        cd libnfc
+        
+        # 创建构建目录
+        mkdir -p build && cd build
+        
+        # CMake 配置和构建 (MinGW32)
+        cmake -G "Ninja" \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/mingw32 \
+          -DLIBUSB_INCLUDE_DIR=/mingw32/include/libusb-1.0 \
+          -DLIBUSB_LIBRARIES=/mingw32/lib/libusb-1.0.dll.a \
+          ..
+        
+        ninja
+        ninja install
+        
+        echo "=== libnfc built successfully ==="
+        
+        # 列出生成的工具
+        ls -la utils/
+
+    - name: Build mfoc from source
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Building mfoc from source ==="
+        
+        # 克隆 mfoc
+        git clone --depth 1 https://github.com/nfc-tools/mfoc.git
+        cd mfoc
+        
+        # Autoreconf
+        autoreconf -vis
+        
+        # 配置和构建
+        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        make -j$(nproc)
+        make install
+        
+        echo "=== mfoc built successfully ==="
+
+    - name: Build mfcuk from source
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Building mfcuk from source ==="
+        
+        # 克隆 mfcuk
+        git clone --depth 1 https://github.com/nfc-tools/mfcuk.git
+        cd mfcuk
+        
+        # Autoreconf
+        autoreconf -vis
+        
+        # 配置和构建
+        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        make -j$(nproc)
+        make install
+        
+        echo "=== mfcuk built successfully ==="
+
+    - name: Build mfoc-hardnested from source
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Building mfoc-hardnested from source ==="
+        
+        # 克隆 mfoc-hardnested
+        git clone --depth 1 https://github.com/nfc-tools/mfoc-hardnested.git
+        cd mfoc-hardnested
+        
+        # Autoreconf
+        autoreconf -vis
+        
+        # 配置和构建
+        ./configure --prefix=/mingw32 --host=i686-w64-mingw32
+        make -j$(nproc)
+        
+        echo "=== mfoc-hardnested built successfully ==="
+
+    - name: Collect built tools
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Collecting all built tools ==="
+        
+        # 创建 nfc-bin 目录
+        mkdir -p nfc-bin
+        
+        # 复制 libnfc 工具
+        cp -v libnfc/build/utils/*.exe nfc-bin/ 2>/dev/null || true
+        cp -v libnfc/build/examples/*.exe nfc-bin/ 2>/dev/null || true
+        
+        # 复制 mfoc
+        cp -v mfoc/src/mfoc.exe nfc-bin/ 2>/dev/null || true
+        
+        # 复制 mfcuk
+        cp -v mfcuk/src/mfcuk.exe nfc-bin/ 2>/dev/null || true
+        
+        # 复制 mfoc-hardnested
+        cp -v mfoc-hardnested/src/mfoc.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
+        
+        # 复制必要的 DLL
+        cp -v /mingw32/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw32/bin/libusb-1.0.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw32/bin/libgcc_s_dw2-1.dll nfc-bin/ 2>/dev/null || true
+        cp -v /mingw32/bin/libwinpthread-1.dll nfc-bin/ 2>/dev/null || true
+        
+        # 创建 mfdetect（使用 mfoc 的检测功能）
+        cp nfc-bin/mfoc.exe nfc-bin/mfdetect.exe 2>/dev/null || true
+        
+        # 创建 collect.exe 占位（hardnested nonce 收集功能由 mfoc-hardnested 提供）
+        cp nfc-bin/mfoc-hardnested.exe nfc-bin/collect.exe 2>/dev/null || true
+        
+        echo "=== Tools collected ==="
+        ls -la nfc-bin/
+
+    - name: Prepare nfc-bin for Windows
+      run: |
+        Write-Host "Preparing nfc-bin directory..."
+        
+        # 确保目录存在
+        if (Test-Path "nfc-bin") {
+          Write-Host "Contents of nfc-bin:"
+          Get-ChildItem -Path "nfc-bin" -Name
+          
+          # 检查必要文件
+          $requiredFiles = @(
+            "nfc-list.exe",
+            "nfc-mfclassic.exe", 
+            "mfoc.exe"
+          )
+          
+          foreach ($file in $requiredFiles) {
+            if (Test-Path "nfc-bin\$file") {
+              Write-Host "[OK] $file"
+            } else {
+              Write-Warning "[MISSING] $file"
+            }
+          }
+        } else {
+          Write-Error "nfc-bin directory not found!"
+          exit 1
+        }
+
+    # ============================================================
+    # 构建 .NET 项目
+    # ============================================================
+    - name: Build .NET Release
       run: msbuild MifareOneTool.sln -t:rebuild -property:Configuration=Release -property:Platform=x86
 
+    # ============================================================
+    # 创建发布包
+    # ============================================================
     - name: Create Release Package
       run: |
         $binDir = "MifareOneTool\bin\Release"
         $zipName = "MifareOneTool_${{ github.ref_name }}.zip"
+        
         if (-not (Test-Path $binDir)) {
           Write-Error "Release directory not found!"
           exit 1
         }
+        
+        # 复制 nfc-bin 到输出目录
+        if (Test-Path "nfc-bin") {
+          Write-Host "Copying nfc-bin to release directory..."
+          Copy-Item -Path "nfc-bin" -Destination "$binDir\nfc-bin" -Recurse -Force
+          Write-Host "nfc-bin copied successfully"
+        } else {
+          Write-Warning "nfc-bin directory not found!"
+        }
+        
+        # 创建 auto_keys 目录
+        New-Item -ItemType Directory -Path "$binDir\auto_keys" -Force | Out-Null
+        
+        # 列出最终打包内容
+        Write-Host "=== Release package contents ==="
+        Get-ChildItem -Path $binDir -Recurse -Name | Select-Object -First 100
+        
         Compress-Archive -Path "$binDir\*" -DestinationPath $zipName
         echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
 

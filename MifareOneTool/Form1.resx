@@ -3797,6 +3797,18 @@
   <data name="checkBoxCuidKeyOver.Text" xml:space="preserve">
     <value>CUID写空卡补丁</value>
   </data>
+  <data name="checkBoxDarkTheme.Location" type="System.Drawing.Point, System.Drawing">
+    <value>56, 157</value>
+  </data>
+  <data name="checkBoxDarkTheme.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 20</value>
+  </data>
+  <data name="checkBoxDarkTheme.TabIndex" type="System.Int32, mscorlib">
+    <value>42</value>
+  </data>
+  <data name="checkBoxDarkTheme.Text" xml:space="preserve">
+    <value>暗色主题</value>
+  </data>
   <data name="&gt;&gt;checkBoxCuidKeyOver.Name" xml:space="preserve">
     <value>checkBoxCuidKeyOver</value>
   </data>
