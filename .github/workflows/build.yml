@@ -228,6 +228,33 @@ jobs:
         
         cd external/crypto1_bs
         
+        # 修补 Windows 兼容性: POSIX alarm/signal/fcntl 不存在于 Windows
+        echo "=== Patching for Windows compatibility ==="
+        python3 << 'EOF'
+        import re
+        
+        with open('libnfc_crypto1_crack.c', 'r') as f:
+            content = f.read()
+        
+        # Wrap POSIX-specific calls with #ifndef _WIN32 guards
+        replacements = [
+            (r'^    alarm\(1\);$', r'    #ifndef _WIN32\n    alarm(1);\n    #endif'),
+            (r'^    alarm\(0\);$', r'    #ifndef _WIN32\n    alarm(0);\n    #endif'),
+            (r'^            alarm\(0\);$', r'            #ifndef _WIN32\n            alarm(0);\n            #endif'),
+            (r'^    signal\(SIGALRM, notify_status_offline\);$', r'    #ifndef _WIN32\n    signal(SIGALRM, notify_status_offline);\n    #endif'),
+            (r'^    signal\(SIGALRM, notify_status_online\);$', r'    #ifndef _WIN32\n    signal(SIGALRM, notify_status_online);\n    #endif'),
+            (r'^    fcntl\(0, F_SETFL, O_NONBLOCK\);$', r'    #ifndef _WIN32\n    fcntl(0, F_SETFL, O_NONBLOCK);\n    #endif'),
+        ]
+        
+        for pattern, repl in replacements:
+            content = re.sub(pattern, repl, content, flags=re.MULTILINE)
+        
+        with open('libnfc_crypto1_crack.c', 'w') as f:
+            f.write(content)
+        
+        print("Patched successfully")
+        EOF
+        
         # 下载 CraptEV1 和 Crapto1 依赖（从 GitHub mirror）
         echo "=== Downloading CraptEV1 and Crapto1 dependencies ==="
         curl -sL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
