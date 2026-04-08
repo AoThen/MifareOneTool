@@ -93,6 +93,24 @@ jobs:
         
         echo "=== libnfc built successfully ==="
         
+        # 创建 libnfc.pc 文件供 pkg-config 使用
+        # CMake 的 Windows 构建不生成 .pc 文件
+        cat > /mingw64/lib/pkgconfig/libnfc.pc << 'EOF'
+prefix=/mingw64
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libnfc
+Description: NFC library
+Version: 1.8.0
+Libs: -L${libdir} -lnfc
+Cflags: -I${includedir}
+EOF
+        
+        echo "=== Created libnfc.pc ==="
+        pkg-config --cflags --libs libnfc
+        
         # 列出生成的工具
         ls -la utils/ 2>/dev/null || ls -la .
 
@@ -102,9 +120,8 @@ jobs:
         set -e
         echo "=== Building mfoc from source ==="
         
-        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
-        export LIBNFC_CFLAGS="-I/mingw64/include"
-        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
         
         # 克隆 mfoc
         git clone --depth 1 https://github.com/nfc-tools/mfoc.git
@@ -126,9 +143,8 @@ jobs:
         set -e
         echo "=== Building mfcuk from source ==="
         
-        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
-        export LIBNFC_CFLAGS="-I/mingw64/include"
-        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
         
         # 克隆 mfcuk
         git clone --depth 1 https://github.com/nfc-tools/mfcuk.git
@@ -150,9 +166,8 @@ jobs:
         set -e
         echo "=== Building mfoc-hardnested from source ==="
         
-        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
-        export LIBNFC_CFLAGS="-I/mingw64/include"
-        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
         
         # 克隆 mfoc-hardnested
         git clone --depth 1 https://github.com/nfc-tools/mfoc-hardnested.git
