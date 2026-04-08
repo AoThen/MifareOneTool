@@ -22,9 +22,43 @@ namespace MifareOneTool
     {
         public Form1()
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.Language);
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Properties.Settings.Default.Language);
+            // 固定使用中文语言
+            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("zh-cn");
+            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zh-cn");
+            
+            // 设置默认字体为微软雅黑
+            Font defaultFont = new Font("微软雅黑", 9f, FontStyle.Regular);
+            this.Font = defaultFont;
+            
             InitializeComponent();
+            
+            // 递归设置所有控件的字体
+            SetDefaultFont(this, defaultFont);
+        }
+        
+        private void SetDefaultFont(Control control, Font font)
+        {
+            foreach (Control c in control.Controls)
+            {
+                // 跳过RichTextBox，保持其原有字体
+                if (c is RichTextBox)
+                    continue;
+                
+                // 保持原有的字体大小和样式，只改变字体家族
+                try
+                {
+                    c.Font = new Font(font.FontFamily, c.Font.Size, c.Font.Style);
+                }
+                catch
+                {
+                    // 如果设置失败，使用默认字体
+                }
+                
+                if (c.HasChildren)
+                {
+                    SetDefaultFont(c, font);
+                }
+            }
         }
 
         private Process process = new Process();
@@ -1125,11 +1159,6 @@ namespace MifareOneTool
             omfd = rmfd;
         }
 
-        private void buttonEUpdate_Click(object sender, EventArgs e)
-        {
-            toolStripCheckUpdate_ButtonClick(sender, e);
-        }
-
         private void buttonESelectKey_Click(object sender, EventArgs e)
         {
             buttonSelectKey_Click(sender, e);
@@ -1279,11 +1308,6 @@ namespace MifareOneTool
         private void buttonECheckEncrypt_Click(object sender, EventArgs e)
         {
             buttonCheckEncrypt_Click(sender, e);
-        }
-
-        private void toolStripCheckUpdate_ButtonClick(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/xcicode/MifareOneTool/releases/latest");
         }
 
         private void buttonDiffTool_Click(object sender, EventArgs e)
@@ -1575,7 +1599,7 @@ namespace MifareOneTool
         {
             ThemeManager.IsDarkTheme = checkBoxDarkTheme.Checked;
             ThemeManager.ApplyTheme(this);
-            MessageBox.Show(Resources.需要重启软件以应用主题更改, Resources.主题设置, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // 主题会立即应用，无需重启
         }
 
         private void buttonMFF08_Click(object sender, EventArgs e)
@@ -1584,25 +1608,5 @@ namespace MifareOneTool
             mff08.ShowDialog();
         }
 
-        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBox1.SelectedItem.ToString() == Resources.标准)
-            {
-                System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("zh-cn");
-                System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zh-cn");
-                Properties.Settings.Default.Language = "zh-cn";
-                Properties.Settings.Default.Save();
-                Application.Restart();
-            }
-            else if (comboBox1.SelectedItem.ToString() == Resources.俄语)
-            {
-                System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
-                System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-                Properties.Settings.Default.Language = "ru-RU";
-                Properties.Settings.Default.Save();
-                Application.Restart();
-
-            }
-        }
     }
 }

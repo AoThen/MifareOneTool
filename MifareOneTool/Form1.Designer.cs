@@ -147,10 +147,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.SetDeviceCombo = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel22 = new System.Windows.Forms.FlowLayoutPanel();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel23 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBoxDefIsAdv = new System.Windows.Forms.CheckBox();
@@ -164,7 +160,7 @@
             this.runTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.localVersionLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.curDevice = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripCheckUpdate = new System.Windows.Forms.ToolStripSplitButton();
+
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -224,8 +220,6 @@
             this.groupBox14.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
             this.flowLayoutPanel22.SuspendLayout();
-            this.groupBox15.SuspendLayout();
-            this.flowLayoutPanel23.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.groupBox11.SuspendLayout();
@@ -1251,45 +1245,9 @@
             // flowLayoutPanel22
             // 
             resources.ApplyResources(this.flowLayoutPanel22, "flowLayoutPanel22");
-            this.flowLayoutPanel22.Controls.Add(this.groupBox15);
             this.flowLayoutPanel22.Controls.Add(this.groupBox13);
             this.flowLayoutPanel22.Controls.Add(this.groupBox11);
             this.flowLayoutPanel22.Name = "flowLayoutPanel22";
-            // 
-            // groupBox15
-            // 
-            resources.ApplyResources(this.groupBox15, "groupBox15");
-            this.groupBox15.BackColor = System.Drawing.Color.DodgerBlue;
-            this.groupBox15.Controls.Add(this.flowLayoutPanel23);
-            this.groupBox15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox15.ForeColor = System.Drawing.Color.White;
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.TabStop = false;
-            // 
-            // flowLayoutPanel23
-            // 
-            resources.ApplyResources(this.flowLayoutPanel23, "flowLayoutPanel23");
-            this.flowLayoutPanel23.BackColor = System.Drawing.Color.White;
-            this.flowLayoutPanel23.Controls.Add(this.label12);
-            this.flowLayoutPanel23.Controls.Add(this.comboBox1);
-            this.flowLayoutPanel23.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.flowLayoutPanel23.Name = "flowLayoutPanel23";
-            // 
-            // label12
-            // 
-            resources.ApplyResources(this.label12, "label12");
-            this.label12.Name = "label12";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.BackColor = System.Drawing.Color.AliceBlue;
-            resources.ApplyResources(this.comboBox1, "comboBox1");
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            resources.GetString("comboBox1.Items"),
-            resources.GetString("comboBox1.Items1")});
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
             // groupBox13
             // 
@@ -1366,8 +1324,7 @@
             this.statusLabel,
             this.runTimeLabel,
             this.localVersionLabel,
-            this.curDevice,
-            this.toolStripCheckUpdate});
+            this.curDevice});
             this.statusStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -1398,16 +1355,6 @@
             this.curDevice.Margin = new System.Windows.Forms.Padding(50, 0, 50, 0);
             this.curDevice.Name = "curDevice";
             resources.ApplyResources(this.curDevice, "curDevice");
-            // 
-            // toolStripCheckUpdate
-            // 
-            this.toolStripCheckUpdate.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripCheckUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripCheckUpdate.ForeColor = System.Drawing.SystemColors.ControlText;
-            resources.ApplyResources(this.toolStripCheckUpdate, "toolStripCheckUpdate");
-            this.toolStripCheckUpdate.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.toolStripCheckUpdate.Name = "toolStripCheckUpdate";
-            this.toolStripCheckUpdate.ButtonClick += new System.EventHandler(this.toolStripCheckUpdate_ButtonClick);
             // 
             // timer1
             // 
@@ -1536,10 +1483,6 @@
             this.flowLayoutPanel5.PerformLayout();
             this.flowLayoutPanel22.ResumeLayout(false);
             this.flowLayoutPanel22.PerformLayout();
-            this.groupBox15.ResumeLayout(false);
-            this.groupBox15.PerformLayout();
-            this.flowLayoutPanel23.ResumeLayout(false);
-            this.flowLayoutPanel23.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
             this.flowLayoutPanel4.ResumeLayout(false);
@@ -1677,10 +1620,6 @@
         private System.Windows.Forms.Button buttonEMfWrite;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel22;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel14;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel23;
-        private System.Windows.Forms.GroupBox groupBox15;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.GroupBox groupBox16;
@@ -1690,7 +1629,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel24;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.ToolStripSplitButton toolStripCheckUpdate;
         private System.Windows.Forms.ImageList imageList2;
     }
 }
