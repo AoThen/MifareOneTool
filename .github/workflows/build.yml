@@ -213,12 +213,12 @@ jobs:
         
         # 检查编译结果
         echo "=== Checking mfoc-hardnested build results ==="
-        if [ -f "src/mfoc.exe" ]; then
-          echo "✓ mfoc-hardnested (mfoc.exe) built successfully"
-          ls -la src/mfoc.exe
-          file src/mfoc.exe
+        if [ -f "src/mfoc-hardnested.exe" ]; then
+          echo "✓ mfoc-hardnested.exe built successfully"
+          ls -la src/mfoc-hardnested.exe
+          file src/mfoc-hardnested.exe
         else
-          echo "✗ mfoc-hardnested mfoc.exe not found!"
+          echo "✗ mfoc-hardnested.exe not found!"
           ls -la src/*.exe 2>/dev/null || echo "No exe files in src/"
           exit 1
         fi
@@ -243,7 +243,7 @@ jobs:
         cp -v mfcuk/src/mfcuk.exe nfc-bin/ 2>/dev/null || true
         
         # 复制 mfoc-hardnested
-        cp -v mfoc-hardnested/src/mfoc.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
+        cp -v mfoc-hardnested/src/mfoc-hardnested.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
         
         # 复制必要的 DLL
         cp -v /mingw64/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
