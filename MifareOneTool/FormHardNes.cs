@@ -42,6 +42,21 @@ namespace MifareOneTool
             return arg;
         }
 
+        /// <summary>
+        /// 生成 collect.exe 兼容的参数格式
+        /// collect.exe 用法: <known key> <for block> <A|B> <target block> <A|B>
+        /// </summary>
+        public string GetArgForCollect()
+        {
+            string key = keyEdit.Text.ToUpper();
+            int knownBlock = getBlock(Convert.ToInt32(sector1.Text.Trim()));
+            string knownType = radioKey1A.Checked ? "A" : "B";
+            int targetBlock = getBlock(Convert.ToInt32(sector2.Text.Trim()));
+            string targetType = radioKey2A.Checked ? "A" : "B";
+            
+            return string.Format("{0} {1} {2} {3} {4}", key, knownBlock, knownType, targetBlock, targetType);
+        }
+
         public string GetFileAfter()
         {
             string a = "_";

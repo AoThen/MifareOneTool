@@ -255,11 +255,27 @@ jobs:
         # 创建 mfdetect（使用 mfoc 的检测功能）
         cp nfc-bin/mfoc.exe nfc-bin/mfdetect.exe 2>/dev/null || true
         
-        # 创建 collect.exe 占位（hardnested nonce 收集功能由 mfoc-hardnested 提供）
-        cp nfc-bin/mfoc-hardnested.exe nfc-bin/collect.exe 2>/dev/null || true
-        
         echo "=== Tools collected ==="
         ls -la nfc-bin/
+
+    - name: Download proprietary tools from original release
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Downloading mff08.exe and collect.exe from original release ==="
+        
+        # 从原版 v1.7.0 release 下载
+        curl -sL -o /tmp/M1T-Release.zip "https://github.com/xcicode/MifareOneTool/releases/download/v1.7.0/M1T-Release.zip"
+        
+        # 解压并提取需要的文件
+        unzip -o /tmp/M1T-Release.zip "nfc-bin/mff08.exe" "nfc-bin/collect.exe" -d /tmp/
+        
+        # 复制到 nfc-bin 目录
+        cp -v /tmp/nfc-bin/mff08.exe nfc-bin/
+        cp -v /tmp/nfc-bin/collect.exe nfc-bin/
+        
+        echo "=== Proprietary tools downloaded ==="
+        ls -la nfc-bin/mff08.exe nfc-bin/collect.exe
 
     - name: Prepare nfc-bin for Windows
       run: |
@@ -274,7 +290,9 @@ jobs:
           $requiredFiles = @(
             "nfc-list.exe",
             "nfc-mfclassic.exe", 
-            "mfoc.exe"
+            "mfoc.exe",
+            "mff08.exe",
+            "collect.exe"
           )
           
           foreach ($file in $requiredFiles) {

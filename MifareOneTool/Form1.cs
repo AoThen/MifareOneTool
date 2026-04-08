@@ -1438,15 +1438,18 @@ namespace MifareOneTool
             FormHardNes fhn = new FormHardNes();
             if (fhn.ShowDialog() == DialogResult.Yes)
             {
-                string hardargs = fhn.GetArg();
+                string hardargs;
                 BackgroundWorker bgw = new BackgroundWorker();
                 if (fhn.collectOnly())
                 {
-                    //lastuid = "0x" + GetUID() + fhn.GetFileAfter();
+                    // collect.exe 参数格式: <known key> <for block> <A|B> <target block> <A|B>
+                    hardargs = fhn.GetArgForCollect();
                     bgw.DoWork += new DoWorkEventHandler(CollectNonce);
                 }
                 else
                 {
+                    // libnfc_hardnested.exe 参数格式: -K <key> -D <block>:<type> -d <block>:<type>
+                    hardargs = fhn.GetArg();
                     bgw.DoWork += new DoWorkEventHandler(Hardnest);
                 }
                 bgw.WorkerReportsProgress = true;

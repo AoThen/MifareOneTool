@@ -131,6 +131,57 @@ MifareOneTool/
 | `libnfc_hardnested.exe` | HardNested 攻击 |
 | `mfdetect.exe` | 卡片加密检测 |
 
+### 5. 专有工具来源说明
+
+以下工具因源代码不可公开获取或构建依赖已失效，从原版 release 下载：
+
+#### mff08.exe
+
+| 属性 | 说明 |
+|------|------|
+| **功能** | MFF08 中国克隆卡（UID 可更改卡）操作工具 |
+| **命令格式** | `mff08.exe c <type> u "<dump_file>"` |
+| **使用场景** | 恢复因写卡导致 0 块损坏的卡片数据 |
+| **源代码状态** | ❌ 未找到公开源代码 |
+| **获取方式** | 从原版 [MifareOneTool v1.7.0](https://github.com/xcicode/MifareOneTool/releases/download/v1.7.0/M1T-Release.zip) 下载 |
+
+#### collect.exe (libnfc_crypto1_crack)
+
+| 属性 | 说明 |
+|------|------|
+| **功能** | HardNested Nonce 收集器（使用 libnfc） |
+| **命令格式** | `collect.exe <known_key> <known_block> <A\|B> <target_block> <A\|B>` |
+| **源代码位置** | [aczid/crypto1_bs](https://github.com/aczid/crypto1_bs) - `libnfc_crypto1_crack.c` |
+| **许可证** | GPLv2 |
+| **构建依赖** | CraptEV1 + Crapto1（原站 crapto1.netgarage.org 已下线） |
+| **依赖替代** | [li0ard/crapto1](https://github.com/li0ard/crapto1) / [nfc-tools/mfcuk](https://github.com/nfc-tools/mfcuk) |
+| **当前获取方式** | 从原版 release 下载（因构建依赖缺失） |
+
+**collect.exe 构建说明**：
+
+```bash
+# 克隆源码
+git clone https://github.com/aczid/crypto1_bs.git
+cd crypto1_bs
+
+# 尝试获取依赖（原站已下线，需要寻找替代源）
+make get_craptev1  # 失败：crapto1.netgarage.org 无法访问
+make get_crapto1   # 失败
+
+# 构建
+make
+```
+
+**为何不能使用 mfoc-hardnested -F 替代 collect.exe**：
+
+| 对比项 | collect.exe | mfoc-hardnested -F |
+|--------|:-----------:|:------------------:|
+| 参数格式 | `<key> <blk> <A\|B> <blk> <A\|B>` | `-F -f keys.txt -O out.mfd` |
+| 指定目标扇区 | ✅ | ❌ 自动选择 |
+| 只收集 nonces | ✅ | ❌ 完整攻击流程 |
+| 输出 nonces 文件 | ✅ `.txt` | ❌ |
+| 稳定性 | ✅ | ❌ [Issue #26](https://github.com/nfc-tools/mfoc-hardnested/issues/26)：只收集 1 个 nonce 就卡住 |
+
 ## 数据流
 
 ```
