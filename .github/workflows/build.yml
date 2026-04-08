@@ -66,7 +66,8 @@ jobs:
         pkg-config --cflags --libs libusb-1.0 || echo "Warning: pkg-config check failed"
         
         # CMake 配置和构建 (MinGW64)
-        # 禁用旧版 libusb0 驱动的编译，保留 PN532 UART 驱动
+        # 禁用需要 libusb 0.1 的 USB 驱动，保留 PN532 UART 驱动
+        # 注意：变量名必须是 LIBNFC_DRIVER_* 而不是 DRIVER_*
         cmake -G "Ninja" \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/mingw64 \
@@ -74,10 +75,10 @@ jobs:
           -DLIBUSB_INCLUDE_DIRS=/mingw64/include/libusb-1.0 \
           -DLIBUSB_LIBRARIES=/mingw64/lib/libusb-1.0.dll.a \
           -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-          -DDRIVER_ACR122_USB=OFF \
-          -DDRIVER_PN53X_USB=OFF \
-          -DDRIVER_ARYGON=OFF \
-          -DDRIVER_ACR122S=OFF \
+          -DLIBNFC_DRIVER_ACR122_USB=OFF \
+          -DLIBNFC_DRIVER_PN53X_USB=OFF \
+          -DLIBNFC_DRIVER_ARYGON=OFF \
+          -DLIBNFC_DRIVER_ACR122S=OFF \
           ..
         
         ninja
