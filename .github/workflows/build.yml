@@ -268,7 +268,7 @@ jobs:
         # 设置编译器为 MinGW64
         export CC=x86_64-w64-mingw32-gcc
         
-        # 编译 Windows 64 位版本
+        # 编译 Windows 64 位版本 (动态链接 libnfc)
         echo "=== Compiling libnfc_crypto1_crack for Windows ==="
         ${CC} -std=gnu99 -O3 -march=x86-64 \
           libnfc_crypto1_crack.c \
@@ -277,7 +277,7 @@ jobs:
           craptev1-v1.1/craptev1.c \
           -I /mingw64/include -I crapto1-v3.3/ -I craptev1-v1.1/ \
           -L /mingw64/lib \
-          -static -o collect.exe \
+          -o collect.exe \
           -lpthread -lnfc -lm \
           -Wl,--allow-multiple-definition
         
