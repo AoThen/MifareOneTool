@@ -120,6 +120,9 @@ jobs:
         git clone --depth 1 https://github.com/nfc-tools/mfoc.git
         cd mfoc
         
+        # 修补: errno 作为参数名与系统宏冲突
+        sed -i 's/int errno/int err_code/g' src/mfoc.h src/mfoc.c
+        
         # Autoreconf
         autoreconf -vis
         
