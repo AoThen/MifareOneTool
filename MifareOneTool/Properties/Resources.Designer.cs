@@ -1492,5 +1492,185 @@ namespace MifareOneTool.Properties {
                 return ResourceManager.GetString("错误", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 块.
+        /// </summary>
+        public static string 块 {
+            get {
+                return ResourceManager.GetString("块", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 差异.
+        /// </summary>
+        public static string 差异 {
+            get {
+                return ResourceManager.GetString("差异", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 卡片信息预览.
+        /// </summary>
+        public static string 卡片信息预览 {
+            get {
+                return ResourceManager.GetString("卡片信息预览", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на UID.
+        /// </summary>
+        public static string UID {
+            get {
+                return ResourceManager.GetString("UID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на BCC.
+        /// </summary>
+        public static string BCC {
+            get {
+                return ResourceManager.GetString("BCC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 正常.
+        /// </summary>
+        public static string 正常 {
+            get {
+                return ResourceManager.GetString("正常", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 异常.
+        /// </summary>
+        public static string 异常 {
+            get {
+                return ResourceManager.GetString("异常", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 密钥A.
+        /// </summary>
+        public static string 密钥A {
+            get {
+                return ResourceManager.GetString("密钥A", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 密钥B.
+        /// </summary>
+        public static string 密钥B {
+            get {
+                return ResourceManager.GetString("密钥B", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 访问控制.
+        /// </summary>
+        public static string 访问控制 {
+            get {
+                return ResourceManager.GetString("访问控制", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 状态.
+        /// </summary>
+        public static string 状态 {
+            get {
+                return ResourceManager.GetString("状态", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 确认操作.
+        /// </summary>
+        public static string 确认操作 {
+            get {
+                return ResourceManager.GetString("确认操作", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 请输入确认码以继续：.
+        /// </summary>
+        public static string 请输入确认码以继续 {
+            get {
+                return ResourceManager.GetString("请输入确认码以继续", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 确认码错误，操作已取消。.
+        /// </summary>
+        public static string 确认码错误_操作已取消 {
+            get {
+                return ResourceManager.GetString("确认码错误_操作已取消", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 该操作将会格式化M1卡，清除所有数据！此操作不可恢复！.
+        /// </summary>
+        public static string 该操作将会格式化M1卡_清除所有数据 {
+            get {
+                return ResourceManager.GetString("该操作将会格式化M1卡_清除所有数据", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 需要重启软件以应用主题更改。.
+        /// </summary>
+        public static string 需要重启软件以应用主题更改 {
+            get {
+                return ResourceManager.GetString("需要重启软件以应用主题更改", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 主题设置.
+        /// </summary>
+        public static string 主题设置 {
+            get {
+                return ResourceManager.GetString("主题设置", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 差异.
+        /// </summary>
+        public static string _有差异 {
+            get {
+                return ResourceManager.GetString("_有差异", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 相同.
+        /// </summary>
+        public static string _相同 {
+            get {
+                return ResourceManager.GetString("_相同", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 对比完成，共 {0} 个块不同，共 {1} 个字节不同。.
+        /// </summary>
+        public static string 对比完成_共_0_个块不同_共_1_个字节不同 {
+            get {
+                return ResourceManager.GetString("对比完成_共_0_个块不同_共_1_个字节不同", resourceCulture);
+            }
+        }
     }
 }
