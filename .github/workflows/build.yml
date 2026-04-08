@@ -102,8 +102,9 @@ jobs:
         set -e
         echo "=== Building mfoc from source ==="
         
-        # 设置 PKG_CONFIG_PATH 以找到 libnfc
-        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
+        export LIBNFC_CFLAGS="-I/mingw64/include"
+        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
         
         # 克隆 mfoc
         git clone --depth 1 https://github.com/nfc-tools/mfoc.git
@@ -113,7 +114,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
+        ./configure --prefix=/mingw64 --libdir=/mingw64/lib
         make -j$(nproc)
         make install
         
@@ -125,8 +126,9 @@ jobs:
         set -e
         echo "=== Building mfcuk from source ==="
         
-        # 设置 PKG_CONFIG_PATH 以找到 libnfc
-        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
+        export LIBNFC_CFLAGS="-I/mingw64/include"
+        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
         
         # 克隆 mfcuk
         git clone --depth 1 https://github.com/nfc-tools/mfcuk.git
@@ -136,7 +138,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
+        ./configure --prefix=/mingw64 --libdir=/mingw64/lib
         make -j$(nproc)
         make install
         
@@ -148,8 +150,9 @@ jobs:
         set -e
         echo "=== Building mfoc-hardnested from source ==="
         
-        # 设置 PKG_CONFIG_PATH 以找到 libnfc
-        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        # libnfc 在 Windows 下不安装 .pc 文件，手动设置编译参数
+        export LIBNFC_CFLAGS="-I/mingw64/include"
+        export LIBNFC_LIBS="-L/mingw64/lib -lnfc"
         
         # 克隆 mfoc-hardnested
         git clone --depth 1 https://github.com/nfc-tools/mfoc-hardnested.git
@@ -159,7 +162,7 @@ jobs:
         autoreconf -vis
         
         # 配置和构建
-        ./configure --prefix=/mingw64 PKG_CONFIG_PATH="/mingw64/lib/pkgconfig"
+        ./configure --prefix=/mingw64 --libdir=/mingw64/lib
         make -j$(nproc)
         
         echo "=== mfoc-hardnested built successfully ==="
