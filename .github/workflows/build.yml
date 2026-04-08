@@ -68,6 +68,7 @@ jobs:
         # CMake 配置和构建 (MinGW64)
         # 禁用需要 libusb 0.1 的 USB 驱动，保留 PN532 UART 驱动
         # 注意：变量名必须是 LIBNFC_DRIVER_* 而不是 DRIVER_*
+        # 禁用 ENVVARS 避免编译有 bug 的 stdlib.c (char *str[32] 应为 char str[32])
         cmake -G "Ninja" \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/mingw64 \
@@ -79,6 +80,7 @@ jobs:
           -DLIBNFC_DRIVER_PN53X_USB=OFF \
           -DLIBNFC_DRIVER_ARYGON=OFF \
           -DLIBNFC_DRIVER_ACR122S=OFF \
+          -DLIBNFC_ENVVARS=OFF \
           ..
         
         ninja
