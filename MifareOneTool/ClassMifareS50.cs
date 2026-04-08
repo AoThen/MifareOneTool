@@ -153,7 +153,7 @@ namespace MifareOneTool
         AB_B_B_AB,
         N_N_N_N
     }
-    class Sector
+    public class Sector
     {
         private byte[][] _sector = new byte[4][] { new byte[16], new byte[16], new byte[16], new byte[16], };
         public byte[][] Block
@@ -282,7 +282,7 @@ namespace MifareOneTool
             set { for (int i = 6; i < 10; i++) { this._sector[3][i] = value[i]; } }
         }
     }
-    class S50
+    public class S50
     {
         private List<Sector> _sectors = new List<Sector>(16);
 

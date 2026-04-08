@@ -91,7 +91,18 @@ jobs:
         ninja
         ninja install
         
-        echo "=== libnfc built successfully ==="
+        # 检查编译结果
+        echo "=== Checking libnfc build results ==="
+        if [ -f "/mingw64/bin/libnfc.dll" ] && [ -f "/mingw64/lib/libnfc.dll.a" ]; then
+          echo "✓ libnfc.dll and libnfc.dll.a built successfully"
+          ls -la /mingw64/bin/libnfc.dll
+          ls -la /mingw64/lib/libnfc.dll.a
+        else
+          echo "✗ libnfc build failed - library files not found!"
+          ls -la /mingw64/bin/ | grep -i nfc || true
+          ls -la /mingw64/lib/ | grep -i nfc || true
+          exit 1
+        fi
         
         # 创建 libnfc.pc 文件供 pkg-config 使用
         # CMake 的 Windows 构建不生成 .pc 文件
@@ -131,7 +142,17 @@ jobs:
         make -j$(nproc)
         make install
         
-        echo "=== mfoc built successfully ==="
+        # 检查编译结果
+        echo "=== Checking mfoc build results ==="
+        if [ -f "src/mfoc.exe" ]; then
+          echo "✓ mfoc.exe built successfully"
+          ls -la src/mfoc.exe
+          file src/mfoc.exe
+        else
+          echo "✗ mfoc.exe not found!"
+          ls -la src/*.exe 2>/dev/null || echo "No exe files in src/"
+          exit 1
+        fi
 
     - name: Build mfcuk from source
       shell: msys2 {0}
@@ -157,7 +178,17 @@ jobs:
         make -j$(nproc)
         make install
         
-        echo "=== mfcuk built successfully ==="
+        # 检查编译结果
+        echo "=== Checking mfcuk build results ==="
+        if [ -f "src/mfcuk.exe" ]; then
+          echo "✓ mfcuk.exe built successfully"
+          ls -la src/mfcuk.exe
+          file src/mfcuk.exe
+        else
+          echo "✗ mfcuk.exe not found!"
+          ls -la src/*.exe 2>/dev/null || echo "No exe files in src/"
+          exit 1
+        fi
 
     - name: Build mfoc-hardnested from source
       shell: msys2 {0}
@@ -179,7 +210,17 @@ jobs:
         ./configure --prefix=/mingw64 --libdir=/mingw64/lib
         make -j$(nproc)
         
-        echo "=== mfoc-hardnested built successfully ==="
+        # 检查编译结果
+        echo "=== Checking mfoc-hardnested build results ==="
+        if [ -f "src/mfoc.exe" ]; then
+          echo "✓ mfoc-hardnested (mfoc.exe) built successfully"
+          ls -la src/mfoc.exe
+          file src/mfoc.exe
+        else
+          echo "✗ mfoc-hardnested mfoc.exe not found!"
+          ls -la src/*.exe 2>/dev/null || echo "No exe files in src/"
+          exit 1
+        fi
 
     - name: Collect built tools
       shell: msys2 {0}
