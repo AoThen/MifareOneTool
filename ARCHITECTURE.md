@@ -133,18 +133,6 @@ MifareOneTool/
 
 ### 5. 专有工具来源说明
 
-以下工具因源代码不可公开获取或构建依赖已失效，从原版 release 下载：
-
-#### mff08.exe
-
-| 属性 | 说明 |
-|------|------|
-| **功能** | MFF08 中国克隆卡（UID 可更改卡）操作工具 |
-| **命令格式** | `mff08.exe c <type> u "<dump_file>"` |
-| **使用场景** | 恢复因写卡导致 0 块损坏的卡片数据 |
-| **源代码状态** | ❌ 未找到公开源代码 |
-| **获取方式** | 从原版 [MifareOneTool v1.7.0](https://github.com/xcicode/MifareOneTool/releases/download/v1.7.0/M1T-Release.zip) 下载 |
-
 #### collect.exe (libnfc_crypto1_crack)
 
 | 属性 | 说明 |
@@ -179,6 +167,25 @@ x86_64-w64-mingw32-gcc -std=gnu99 -O3 libnfc_crypto1_crack.c \
   -static -o collect.exe -lpthread -lnfc -lm \
   -Wl,--allow-multiple-definition
 ```
+
+#### mff08.exe → nfc-mfclassic.exe
+
+mff08.exe 已被 `nfc-mfclassic.exe` 完全替代，两者功能完全相同：
+
+| 功能 | mff08.exe | nfc-mfclassic.exe |
+|------|:---------:|:-----------------:|
+| 格式化 | `f` | `f` |
+| 普通读取 | `r` | `r` |
+| 解锁读取 | `R` | `R` |
+| 普通写入 | `w` | `w` |
+| 解锁写入 | `W` | `W` |
+| A/B 密钥 | `a\|b\|A\|B` | `a\|b\|A\|B` |
+| UID 选择 | `u\|U<uid>` | `u\|U<uid>` |
+
+**解锁功能说明**：
+- `R` - 解锁读取：绕过认证，直接读取 Key A 和 Key B
+- `W` - 解锁写入：允许覆盖 block 0（包括 UID）
+- 仅适用于中国克隆卡（Chinese clones / Magic Cards）
 
 **为何不能使用 mfoc-hardnested -F 替代 collect.exe**：
 

@@ -310,24 +310,6 @@ jobs:
         echo "=== Tools collected ==="
         ls -la nfc-bin/
 
-    - name: Download mff08.exe from original release
-      shell: msys2 {0}
-      run: |
-        set -e
-        echo "=== Downloading mff08.exe from original release ==="
-        
-        # 从原版 v1.7.0 release 下载（mff08.exe 无公开源码）
-        curl -sL -o /tmp/M1T-Release.zip "https://github.com/xcicode/MifareOneTool/releases/download/v1.7.0/M1T-Release.zip"
-        
-        # 解压并提取 mff08.exe
-        unzip -o /tmp/M1T-Release.zip "nfc-bin/mff08.exe" -d /tmp/
-        
-        # 复制到 nfc-bin 目录
-        cp -v /tmp/nfc-bin/mff08.exe nfc-bin/
-        
-        echo "=== mff08.exe downloaded ==="
-        ls -la nfc-bin/mff08.exe
-
     - name: Prepare nfc-bin for Windows
       run: |
         Write-Host "Preparing nfc-bin directory..."
@@ -337,12 +319,11 @@ jobs:
           Write-Host "Contents of nfc-bin:"
           Get-ChildItem -Path "nfc-bin" -Name
           
-          # 检查必要文件
+          # 检查必要文件（mff08.exe 由 nfc-mfclassic.exe 替代）
           $requiredFiles = @(
             "nfc-list.exe",
             "nfc-mfclassic.exe", 
             "mfoc.exe",
-            "mff08.exe",
             "collect.exe"
           )
           

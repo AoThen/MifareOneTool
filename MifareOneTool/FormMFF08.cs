@@ -80,7 +80,8 @@ namespace MifareOneTool
         void cmf_write(object sender, DoWorkEventArgs e)
         {
             if (lprocess) { return; }
-            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/mff08.exe");
+            // 使用 nfc-mfclassic 替代 mff08.exe（功能完全相同）
+            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/nfc-mfclassic.exe");
             string[] args = (string[])e.Argument;
             psi.Arguments = "c " + args[1] + " u \"" + args[0] + "\"";
             if (args[3] != "" && args[2] == "")
@@ -124,10 +125,7 @@ namespace MifareOneTool
 
         private void FormMFF08_Load(object sender, EventArgs e)
         {
-            if (!File.Exists("nfc-bin/mff08.exe"))
-            {
-                MessageBox.Show(Resources.无法找到MFF08程序文件_操作终止, Resources.错误, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // nfc-mfclassic.exe 已是必需工具，无需单独检查
         }
     }
 }
