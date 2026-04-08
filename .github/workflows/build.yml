@@ -95,18 +95,7 @@ jobs:
         
         # 创建 libnfc.pc 文件供 pkg-config 使用
         # CMake 的 Windows 构建不生成 .pc 文件
-        cat > /mingw64/lib/pkgconfig/libnfc.pc << 'EOF'
-prefix=/mingw64
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
-
-Name: libnfc
-Description: NFC library
-Version: 1.8.0
-Libs: -L${libdir} -lnfc
-Cflags: -I${includedir}
-EOF
+        printf 'prefix=/mingw64\nexec_prefix=${prefix}\nlibdir=${exec_prefix}/lib\nincludedir=${prefix}/include\n\nName: libnfc\nDescription: NFC library\nVersion: 1.8.0\nLibs: -L${libdir} -lnfc\nCflags: -I${includedir}\n' > /mingw64/lib/pkgconfig/libnfc.pc
         
         echo "=== Created libnfc.pc ==="
         pkg-config --cflags --libs libnfc
