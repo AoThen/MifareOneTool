@@ -16,6 +16,12 @@ MifareOneTool 是一款 Windows 平台下的 Mifare Classic 卡片操作工具�
 ```
 MifareOneTool/
 ├── MifareOneTool.sln          # Visual Studio 解决方案
+├── external/                  # 外部工具源码 (Git Submodules)
+│   ├── libnfc/                # libnfc 核心 + 工具
+│   ├── crypto1_bs/            # collect.exe (nonce 收集器)
+│   ├── mfoc/                  # MFOC 暗文攻击
+│   ├── mfcuk/                 # MFCUK 暴力破解
+│   └── build-tools.sh         # 统一构建脚本
 └── MifareOneTool/             # 主项目目录
     ├── Program.cs             # 应用程序入口
     ├── Form1.cs               # 主窗体（核心业务逻辑）
@@ -226,6 +232,47 @@ mff08.exe 已被 `nfc-mfclassic.exe` 完全替代，两者功能完全相同：
 - 俄文 (`*.ru.resx`)
 
 语言设置保存在 `Properties.Settings.Default.Language`，启动时通过 `CultureInfo` 应用。
+
+## 外部工具源码集成
+
+项目使用 Git Submodules 直接集成上游源码，实现完全可控的构建流程：
+
+```
+external/
+├── libnfc/           # libnfc 核心 + 工具
+├── crypto1_bs/       # collect.exe (nonce 收集器)
+├── mfoc/             # MFOC 暗文攻击
+├── mfcuk/            # MFCUK 暴力破解
+└── build-tools.sh    # 统一构建脚本
+```
+
+| Submodule | 上游仓库 | 构建产物 |
+|-----------|----------|----------|
+| `libnfc` | [nfc-tools/libnfc](https://github.com/nfc-tools/libnfc) | nfc-*.exe, libnfc.dll |
+| `crypto1_bs` | [aczid/crypto1_bs](https://github.com/aczid/crypto1_bs) | collect.exe |
+| `mfoc` | [nfc-tools/mfoc](https://github.com/nfc-tools/mfoc) | mfoc.exe |
+| `mfcuk` | [nfc-tools/mfcuk](https://github.com/nfc-tools/mfcuk) | mfcuk.exe |
+
+**mfoc-hardnested** 因仓库较大未作为 submodule，CI 中直接克隆。
+
+**使用 Submodule 的优势**：
+1. **版本可控** - 锁定特定 commit，避免上游变更导致构建失败
+2. **可定制** - 可直接修改源码适配项目需求
+3. **离线构建** - 无需每次从网络下载
+4. **透明可审计** - 源码集成在仓库中，可审查安全
+
+**初始化 Submodules**：
+```bash
+git clone --recursive https://github.com/AoThen/MifareOneTool.git
+# 或在已克隆仓库中：
+git submodule update --init --recursive
+```
+
+**本地构建工具**：
+```bash
+cd external
+./build-tools.sh ../MifareOneTool/nfc-bin/
+```
 
 ## 配置文件
 

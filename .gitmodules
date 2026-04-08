@@ -1,0 +1,12 @@
+[submodule "external/libnfc"]
+	path = external/libnfc
+	url = https://github.com/nfc-tools/libnfc.git
+[submodule "external/mfoc"]
+	path = external/mfoc
+	url = https://github.com/nfc-tools/mfoc.git
+[submodule "external/crypto1_bs"]
+	path = external/crypto1_bs
+	url = https://github.com/aczid/crypto1_bs.git
+[submodule "external/mfcuk"]
+	path = external/mfcuk
+	url = https://github.com/nfc-tools/mfcuk.git
