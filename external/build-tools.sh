@@ -26,7 +26,7 @@ mkdir -p "$BUILD_DIR" "$OUTPUT_DIR"
 # 1. 构建 libnfc (核心库)
 # ============================================
 build_libnfc() {
-    echo "[1/5] 构建 libnfc..."
+    echo "[1/6] 构建 libnfc..."
     cd "$SCRIPT_DIR/libnfc"
     
     if [ ! -f "$BUILD_DIR/libnfc/lib/libnfc.a" ]; then
@@ -54,7 +54,7 @@ build_libnfc() {
 # 2. 构建 libnfc 命令行工具
 # ============================================
 build_libnfc_tools() {
-    echo "[2/5] 构建 libnfc 工具..."
+    echo "[2/6] 构建 libnfc 工具..."
     
     # nfc-scan-device
     $CC -O2 -static \
@@ -95,7 +95,7 @@ build_libnfc_tools() {
 # 3. 构建 mfoc
 # ============================================
 build_mfoc() {
-    echo "[3/5] 构建 mfoc..."
+    echo "[3/6] 构建 mfoc..."
     cd "$SCRIPT_DIR/mfoc"
     
     mkdir -p "$BUILD_DIR/mfoc"
@@ -118,7 +118,7 @@ build_mfoc() {
 # 4. 构建 mfcuk
 # ============================================
 build_mfcuk() {
-    echo "[4/5] 构建 mfcuk..."
+    echo "[4/6] 构建 mfcuk..."
     cd "$SCRIPT_DIR/mfcuk"
     
     mkdir -p "$BUILD_DIR/mfcuk"
@@ -138,10 +138,34 @@ build_mfcuk() {
 }
 
 # ============================================
-# 5. 构建 collect.exe (crypto1_bs)
+# 5. 构建 mfoc-hardnested
+# ============================================
+build_mfoc_hardnested() {
+    echo "[5/6] 构建 mfoc-hardnested..."
+    cd "$SCRIPT_DIR/mfoc-hardnested"
+    
+    autoreconf -vis
+    
+    mkdir -p "$BUILD_DIR/mfoc-hardnested"
+    cd "$BUILD_DIR/mfoc-hardnested"
+    
+    "$SCRIPT_DIR/mfoc-hardnested/configure" \
+        --host=x86_64-w64-mingw32 \
+        --prefix="$BUILD_DIR/install" \
+        CPPFLAGS="-I$BUILD_DIR/libnfc/install/include" \
+        LDFLAGS="-L$BUILD_DIR/libnfc/install/lib"
+    
+    make -j$(nproc)
+    cp src/mfoc-hardnested.exe "$OUTPUT_DIR/"
+    
+    echo "mfoc-hardnested 构建完成"
+}
+
+# ============================================
+# 6. 构建 collect.exe (crypto1_bs)
 # ============================================
 build_collect() {
-    echo "[5/5] 构建 collect.exe..."
+    echo "[6/6] 构建 collect.exe..."
     cd "$SCRIPT_DIR/crypto1_bs"
     
     # 下载依赖 (crapto1, craptev1)
@@ -184,6 +208,7 @@ main() {
     build_libnfc_tools
     build_mfoc
     build_mfcuk
+    build_mfoc_hardnested
     build_collect
     
     echo ""

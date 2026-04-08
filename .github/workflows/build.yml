@@ -191,14 +191,12 @@ jobs:
       shell: msys2 {0}
       run: |
         set -e
-        echo "=== Building mfoc-hardnested from source ==="
+        echo "=== Building mfoc-hardnested from source (submodule) ==="
         
         # 设置 PKG_CONFIG_PATH 以找到 libnfc
         export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
         
-        # 克隆 mfoc-hardnested
-        git clone --depth 1 https://github.com/nfc-tools/mfoc-hardnested.git
-        cd mfoc-hardnested
+        cd external/mfoc-hardnested
         
         # Autoreconf
         autoreconf -vis
@@ -286,7 +284,7 @@ jobs:
         cp -v external/mfcuk/src/mfcuk.exe nfc-bin/ 2>/dev/null || true
         
         # 复制 mfoc-hardnested
-        cp -v mfoc-hardnested/src/mfoc-hardnested.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
+        cp -v external/mfoc-hardnested/src/mfoc-hardnested.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
         
         # 复制 collect.exe (libnfc_crypto1_crack)
         cp -v external/crypto1_bs/collect.exe nfc-bin/collect.exe 2>/dev/null || true

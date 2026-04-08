@@ -21,6 +21,7 @@ MifareOneTool/
 │   ├── crypto1_bs/            # collect.exe (nonce 收集器)
 │   ├── mfoc/                  # MFOC 暗文攻击
 │   ├── mfcuk/                 # MFCUK 暴力破解
+│   ├── mfoc-hardnested/       # HardNested 攻击
 │   └── build-tools.sh         # 统一构建脚本
 └── MifareOneTool/             # 主项目目录
     ├── Program.cs             # 应用程序入口
@@ -252,8 +253,7 @@ external/
 | `crypto1_bs` | [aczid/crypto1_bs](https://github.com/aczid/crypto1_bs) | collect.exe |
 | `mfoc` | [nfc-tools/mfoc](https://github.com/nfc-tools/mfoc) | mfoc.exe |
 | `mfcuk` | [nfc-tools/mfcuk](https://github.com/nfc-tools/mfcuk) | mfcuk.exe |
-
-**mfoc-hardnested** 因仓库较大未作为 submodule，CI 中直接克隆。
+| `mfoc-hardnested` | [nfc-tools/mfoc-hardnested](https://github.com/nfc-tools/mfoc-hardnested) | mfoc-hardnested.exe |
 
 **使用 Submodule 的优势**：
 1. **版本可控** - 锁定特定 commit，避免上游变更导致构建失败

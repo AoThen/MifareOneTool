@@ -10,3 +10,6 @@
 [submodule "external/mfcuk"]
 	path = external/mfcuk
 	url = https://github.com/nfc-tools/mfcuk.git
+[submodule "external/mfoc-hardnested"]
+	path = external/mfoc-hardnested
+	url = https://github.com/nfc-tools/mfoc-hardnested.git
