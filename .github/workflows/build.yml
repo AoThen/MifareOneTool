@@ -56,6 +56,9 @@ jobs:
         git clone --depth 1 https://github.com/nfc-tools/libnfc.git
         cd libnfc
         
+        # 修复 contrib/win32/stdlib.c 中的 bug: char *str[32] 应为 char str[32]
+        sed -i 's/char \*str\[32\]/char str[256]/g' contrib/win32/stdlib.c
+        
         # 创建构建目录
         mkdir -p build && cd build
         
