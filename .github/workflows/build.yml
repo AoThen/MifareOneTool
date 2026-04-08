@@ -275,7 +275,8 @@ jobs:
           crypto1_bs.c crypto1_bs_crack.c \
           crapto1-v3.3/crapto1.c crapto1-v3.3/crypto1.c \
           craptev1-v1.1/craptev1.c \
-          -I crapto1-v3.3/ -I craptev1-v1.1/ \
+          -I /mingw64/include -I crapto1-v3.3/ -I craptev1-v1.1/ \
+          -L /mingw64/lib \
           -static -o collect.exe \
           -lpthread -lnfc -lm \
           -Wl,--allow-multiple-definition
