@@ -223,6 +223,55 @@ jobs:
           exit 1
         fi
 
+    - name: Build collect.exe (libnfc_crypto1_crack) from source
+      shell: msys2 {0}
+      run: |
+        set -e
+        echo "=== Building collect.exe (libnfc_crypto1_crack) from source ==="
+        
+        # 设置 PKG_CONFIG_PATH 以找到 libnfc
+        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+        
+        # 克隆 crypto1_bs 仓库
+        git clone --depth 1 https://github.com/aczid/crypto1_bs.git
+        cd crypto1_bs
+        
+        # 下载 CraptEV1 和 Crapto1 依赖（从 GitHub mirror）
+        echo "=== Downloading CraptEV1 and Crapto1 dependencies ==="
+        curl -sL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
+        curl -sL -o crapto1-v3.3.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/crapto1-v3.3.tar.xz"
+        
+        # 解压
+        tar Jxvf craptev1-v1.1.tar.xz
+        mkdir -p crapto1-v3.3
+        tar Jxvf crapto1-v3.3.tar.xz -C crapto1-v3.3
+        
+        # 设置编译器为 MinGW64
+        export CC=x86_64-w64-mingw32-gcc
+        
+        # 编译 Windows 64 位版本
+        echo "=== Compiling libnfc_crypto1_crack for Windows ==="
+        ${CC} -std=gnu99 -O3 -march=x86-64 \
+          libnfc_crypto1_crack.c \
+          crypto1_bs.c crypto1_bs_crack.c \
+          crapto1-v3.3/crapto1.c crapto1-v3.3/crypto1.c \
+          craptev1-v1.1/craptev1.c \
+          -I crapto1-v3.3/ -I craptev1-v1.1/ \
+          -static -o collect.exe \
+          -lpthread -lnfc -lm \
+          -Wl,--allow-multiple-definition
+        
+        # 检查编译结果
+        echo "=== Checking collect.exe build results ==="
+        if [ -f "collect.exe" ]; then
+          echo "✓ collect.exe built successfully"
+          ls -la collect.exe
+          file collect.exe
+        else
+          echo "✗ collect.exe not found!"
+          exit 1
+        fi
+
     - name: Collect built tools
       shell: msys2 {0}
       run: |
@@ -245,6 +294,9 @@ jobs:
         # 复制 mfoc-hardnested
         cp -v mfoc-hardnested/src/mfoc-hardnested.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
         
+        # 复制 collect.exe (libnfc_crypto1_crack)
+        cp -v crypto1_bs/collect.exe nfc-bin/collect.exe 2>/dev/null || true
+        
         # 复制必要的 DLL
         cp -v /mingw64/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
         cp -v /mingw64/bin/libusb-1.0.dll nfc-bin/ 2>/dev/null || true
@@ -258,24 +310,23 @@ jobs:
         echo "=== Tools collected ==="
         ls -la nfc-bin/
 
-    - name: Download proprietary tools from original release
+    - name: Download mff08.exe from original release
       shell: msys2 {0}
       run: |
         set -e
-        echo "=== Downloading mff08.exe and collect.exe from original release ==="
+        echo "=== Downloading mff08.exe from original release ==="
         
-        # 从原版 v1.7.0 release 下载
+        # 从原版 v1.7.0 release 下载（mff08.exe 无公开源码）
         curl -sL -o /tmp/M1T-Release.zip "https://github.com/xcicode/MifareOneTool/releases/download/v1.7.0/M1T-Release.zip"
         
-        # 解压并提取需要的文件
-        unzip -o /tmp/M1T-Release.zip "nfc-bin/mff08.exe" "nfc-bin/collect.exe" -d /tmp/
+        # 解压并提取 mff08.exe
+        unzip -o /tmp/M1T-Release.zip "nfc-bin/mff08.exe" -d /tmp/
         
         # 复制到 nfc-bin 目录
         cp -v /tmp/nfc-bin/mff08.exe nfc-bin/
-        cp -v /tmp/nfc-bin/collect.exe nfc-bin/
         
-        echo "=== Proprietary tools downloaded ==="
-        ls -la nfc-bin/mff08.exe nfc-bin/collect.exe
+        echo "=== mff08.exe downloaded ==="
+        ls -la nfc-bin/mff08.exe
 
     - name: Prepare nfc-bin for Windows
       run: |

@@ -153,23 +153,31 @@ MifareOneTool/
 | **命令格式** | `collect.exe <known_key> <known_block> <A\|B> <target_block> <A\|B>` |
 | **源代码位置** | [aczid/crypto1_bs](https://github.com/aczid/crypto1_bs) - `libnfc_crypto1_crack.c` |
 | **许可证** | GPLv2 |
-| **构建依赖** | CraptEV1 + Crapto1（原站 crapto1.netgarage.org 已下线） |
-| **依赖替代** | [li0ard/crapto1](https://github.com/li0ard/crapto1) / [nfc-tools/mfcuk](https://github.com/nfc-tools/mfcuk) |
-| **当前获取方式** | 从原版 release 下载（因构建依赖缺失） |
+| **构建依赖** | CraptEV1 + Crapto1（从 [SnoopyTools/acr122uNFC](https://github.com/SnoopyTools/acr122uNFC) 获取） |
+| **CI 构建状态** | ✅ 从源码编译 |
 
-**collect.exe 构建说明**：
+**collect.exe 构建步骤**：
 
 ```bash
-# 克隆源码
+# 1. 克隆源码
 git clone https://github.com/aczid/crypto1_bs.git
 cd crypto1_bs
 
-# 尝试获取依赖（原站已下线，需要寻找替代源）
-make get_craptev1  # 失败：crapto1.netgarage.org 无法访问
-make get_crapto1   # 失败
+# 2. 下载依赖（从 GitHub mirror）
+curl -sL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
+curl -sL -o crapto1-v3.3.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/crapto1-v3.3.tar.xz"
+tar Jxvf craptev1-v1.1.tar.xz
+mkdir -p crapto1-v3.3
+tar Jxvf crapto1-v3.3.tar.xz -C crapto1-v3.3
 
-# 构建
-make
+# 3. 编译（Windows x64）
+x86_64-w64-mingw32-gcc -std=gnu99 -O3 libnfc_crypto1_crack.c \
+  crypto1_bs.c crypto1_bs_crack.c \
+  crapto1-v3.3/crapto1.c crapto1-v3.3/crypto1.c \
+  craptev1-v1.1/craptev1.c \
+  -I crapto1-v3.3/ -I craptev1-v1.1/ \
+  -static -o collect.exe -lpthread -lnfc -lm \
+  -Wl,--allow-multiple-definition
 ```
 
 **为何不能使用 mfoc-hardnested -F 替代 collect.exe**：
