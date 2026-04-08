@@ -92,11 +92,12 @@ jobs:
         ninja install
         
         # 检查编译结果
+        # 注意：CMake + MinGW 在 Windows 上生成 libnfc.lib 而不是 libnfc.dll.a
         echo "=== Checking libnfc build results ==="
-        if [ -f "/mingw64/bin/libnfc.dll" ] && [ -f "/mingw64/lib/libnfc.dll.a" ]; then
-          echo "✓ libnfc.dll and libnfc.dll.a built successfully"
+        if [ -f "/mingw64/bin/libnfc.dll" ] && [ -f "/mingw64/lib/libnfc.lib" ]; then
+          echo "✓ libnfc.dll and libnfc.lib built successfully"
           ls -la /mingw64/bin/libnfc.dll
-          ls -la /mingw64/lib/libnfc.dll.a
+          ls -la /mingw64/lib/libnfc.lib
         else
           echo "✗ libnfc build failed - library files not found!"
           ls -la /mingw64/bin/ | grep -i nfc || true
