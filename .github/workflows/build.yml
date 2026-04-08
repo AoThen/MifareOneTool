@@ -142,6 +142,9 @@ jobs:
         # 设置 PKG_CONFIG_PATH 以找到 libnfc
         export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
         
+        # 创建 endian.h 兼容头文件 (MinGW 没有)
+        printf '%s\n' '#ifndef _ENDIAN_H' '#define _ENDIAN_H' '#include <stdint.h>' '#include <winsock2.h>' '#include <sys/param.h>' '#define htole16(x) (x)' '#define le16toh(x) (x)' '#define htole32(x) (x)' '#define le32toh(x) (x)' '#define htobe16(x) htons(x)' '#define be16toh(x) ntohs(x)' '#define htobe32(x) htonl(x)' '#define be32toh(x) ntohl(x)' '#endif' > /mingw64/include/endian.h
+        
         # 克隆 mfcuk
         git clone --depth 1 https://github.com/nfc-tools/mfcuk.git
         cd mfcuk
