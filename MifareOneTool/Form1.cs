@@ -174,7 +174,7 @@ namespace MifareOneTool
                 if (myReaders.Count > 0)
                 {
                     logAppend(Resources.将自动选择首个设备 + myReaders.First());
-                    writeConfig(myReaders.First());
+                    writeConfig(myReaders.First(), true, true);
                     SetDeviceCombo.Items.Clear();
                     SetDeviceCombo.Items.AddRange(myReaders.ToArray());
                     SetDeviceCombo.SelectedIndex = 0;
@@ -201,7 +201,7 @@ namespace MifareOneTool
         void list_dev(object sender, DoWorkEventArgs e)
         {
             if (lprocess) { return; }
-            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/nfc-scan-device.exe");
+            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/nfc-scan-device.exe", "-i");
             psi.CreateNoWindow = true;
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
@@ -1583,7 +1583,7 @@ namespace MifareOneTool
         {
             if (SetDeviceCombo.SelectedIndex >= 0)
             {
-                writeConfig(SetDeviceCombo.SelectedItem.ToString());
+                writeConfig(SetDeviceCombo.SelectedItem.ToString(), true, true);
                 logAppend(Resources.已指定使用该NFC设备 + SetDeviceCombo.SelectedItem.ToString());
             }
         }
