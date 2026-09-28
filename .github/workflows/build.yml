@@ -47,6 +47,7 @@ jobs:
           automake
           libtool
           pkg-config
+          mingw-w64-x86_64-python
 
     - name: Build libnfc from source
       shell: msys2 {0}
@@ -111,6 +112,30 @@ jobs:
         
         echo "=== Created libnfc.pc ==="
         pkg-config --cflags --libs libnfc
+        
+        # 单独构建 nfc-mfsetuid（UID/CUID/FUID/UFUID 写入依赖）
+        # examples 整体因部分目标依赖被禁用的 USB 驱动而无法全量构建，
+        # 用独立构建目录按需构建该单一目标，避免影响主构建的 install
+        echo "=== Building nfc-mfsetuid (single example target) ==="
+        mkdir -p ../build-mfsetuid && cd ../build-mfsetuid
+        cmake -G "Ninja" \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/mingw64 \
+          -DCMAKE_PREFIX_PATH=/mingw64 \
+          -DLIBUSB_INCLUDE_DIRS=/mingw64/include/libusb-1.0 \
+          -DLIBUSB_LIBRARIES=/mingw64/lib/libusb-1.0.dll.a \
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+          -DLIBNFC_DRIVER_ACR122_USB=OFF \
+          -DLIBNFC_DRIVER_PN53X_USB=OFF \
+          -DLIBNFC_DRIVER_ARYGON=OFF \
+          -DLIBNFC_DRIVER_ACR122S=OFF \
+          -DLIBNFC_ENVVARS=OFF \
+          -DBUILD_EXAMPLES=ON \
+          ..
+        ninja nfc-mfsetuid
+        mkdir -p ../build/examples
+        cp -v examples/nfc-mfsetuid.exe ../build/examples/nfc-mfsetuid.exe
+        cd ../build
         
         # 列出生成的工具
         ls -la utils/ 2>/dev/null || ls -la .
@@ -257,8 +282,8 @@ jobs:
         
         # 下载 CraptEV1 和 Crapto1 依赖（从 GitHub mirror）
         echo "=== Downloading CraptEV1 and Crapto1 dependencies ==="
-        curl -sL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
-        curl -sL -o crapto1-v3.3.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/crapto1-v3.3.tar.xz"
+        curl -fsSL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
+        curl -fsSL -o crapto1-v3.3.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/crapto1-v3.3.tar.xz"
         
         # 解压
         tar Jxvf craptev1-v1.1.tar.xz
@@ -342,17 +367,28 @@ jobs:
           # 检查必要文件（mff08.exe 由 nfc-mfclassic.exe 替代）
           $requiredFiles = @(
             "nfc-list.exe",
-            "nfc-mfclassic.exe", 
+            "nfc-mfclassic.exe",
+            "nfc-scan-device.exe",
+            "nfc-mfsetuid.exe",
             "mfoc.exe",
+            "mfdetect.exe",
+            "mfoc-hardnested.exe",
+            "mfcuk.exe",
             "collect.exe"
           )
           
+          $missing = $false
           foreach ($file in $requiredFiles) {
             if (Test-Path "nfc-bin\$file") {
               Write-Host "[OK] $file"
             } else {
-              Write-Warning "[MISSING] $file"
+              Write-Host "[MISSING] $file"
+              $missing = $true
             }
+          }
+          if ($missing) {
+            Write-Error "Required tool(s) missing in nfc-bin!"
+            exit 1
           }
         } else {
           Write-Error "nfc-bin directory not found!"

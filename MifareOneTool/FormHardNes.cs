@@ -16,6 +16,8 @@ namespace MifareOneTool
         public FormHardNes()
         {
             InitializeComponent();
+            checkBoxColOnly.CheckedChanged += (s, e) => UpdateTargetInputs();
+            UpdateTargetInputs();
         }
 
         static int getBlock(int sector)
@@ -32,14 +34,27 @@ namespace MifareOneTool
             return trailer_block;
         }
 
+        /// <summary>
+        /// 目标扇区输入仅在"只采集不计算"模式下有意义（collect.exe 需要），破解模式隐藏
+        /// </summary>
+        private void UpdateTargetInputs()
+        {
+            bool collect = checkBoxColOnly.Checked;
+            sector1.Visible = collect;
+            label3.Visible = collect;
+            label4.Visible = collect;
+            radioKey1A.Visible = collect;
+            radioKey1B.Visible = collect;
+            tableLayoutPanel2.Visible = collect;
+        }
+
+        /// <summary>
+        /// 生成 mfoc-hardnested 兼容的参数格式
+        /// mfoc-hardnested 用法: -k <key> [-C] [-F] [-Z] [-P probnum] [-T tolerance] [-O output]
+        /// </summary>
         public string GetArg()
         {
-            // mfoc-hardnested 参数格式: -K <key> -D <block>:<type> -d <block>:<type>
-            string arg = "";
-            arg += "-K " + keyEdit.Text.ToUpper() + " ";
-            arg += "-D " + getBlock(Convert.ToInt32(sector1.Text.Trim())).ToString() + ":" + (radioKey1A.Checked ? "A" : "B") + " ";
-            arg += "-d " + getBlock(Convert.ToInt32(sector2.Text.Trim())).ToString() + ":" + (radioKey2A.Checked ? "A" : "B");
-            return arg;
+            return "-k " + keyEdit.Text.ToUpper() + " ";
         }
 
         /// <summary>
@@ -93,39 +108,42 @@ namespace MifareOneTool
                 tb.BackColor = Color.Aquamarine;
                 tb.Text = content;
             }
-            int sec1, sec2;
-            if (!int.TryParse(sector1.Text, out sec1))
+            if (checkBoxColOnly.Checked)
             {
-                sector1.BackColor = Color.Tomato;
-                error = true;
-            }
-            else
-            {
-                if (sec1 >= 0)
-                {
-                    sector1.BackColor = Color.Aquamarine;
-                }
-                else
+                int sec1, sec2;
+                if (!int.TryParse(sector1.Text, out sec1))
                 {
                     sector1.BackColor = Color.Tomato;
                     error = true;
                 }
-            }
-            if (!int.TryParse(sector2.Text, out sec2))
-            {
-                sector2.BackColor = Color.Tomato;
-                error = true;
-            }
-            else
-            {
-                if (sec2 >= 0)
-                {
-                    sector2.BackColor = Color.Aquamarine;
-                }
                 else
+                {
+                    if (sec1 >= 0)
+                    {
+                        sector1.BackColor = Color.Aquamarine;
+                    }
+                    else
+                    {
+                        sector1.BackColor = Color.Tomato;
+                        error = true;
+                    }
+                }
+                if (!int.TryParse(sector2.Text, out sec2))
                 {
                     sector2.BackColor = Color.Tomato;
                     error = true;
+                }
+                else
+                {
+                    if (sec2 >= 0)
+                    {
+                        sector2.BackColor = Color.Aquamarine;
+                    }
+                    else
+                    {
+                        sector2.BackColor = Color.Tomato;
+                        error = true;
+                    }
                 }
             }
             if (error)

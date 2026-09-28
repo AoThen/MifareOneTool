@@ -125,6 +125,7 @@ namespace MifareOneTool
             if (File.Exists(fa) && File.Exists(fb))
             {
                 richTextBox1.Clear();
+                richTextBox1.Text = Compare();
                 CompareVisual();
             }
             else
@@ -136,8 +137,6 @@ namespace MifareOneTool
         private void CompareVisual()
         {
             dataGridViewDiff.Rows.Clear();
-            int diffCount = 0;
-            int diffBytes = 0;
 
             for (int i = 0; i < 16; i++)
             {
@@ -147,17 +146,6 @@ namespace MifareOneTool
                     byte[] blockB = sb.Sectors[i].Block[a];
 
                     bool hasDiff = !blockA.SequenceEqual(blockB);
-                    if (hasDiff)
-                    {
-                        diffCount++;
-                        for (int b = 0; b < 16; b++)
-                        {
-                            if (blockA[b] != blockB[b])
-                            {
-                                diffBytes++;
-                            }
-                        }
-                    }
 
                     int rowIndex = dataGridViewDiff.Rows.Add();
                     DataGridViewRow row = dataGridViewDiff.Rows[rowIndex];
@@ -178,15 +166,13 @@ namespace MifareOneTool
                     }
                 }
             }
-
-            // 更新统计信息
-            richTextBox1.Text = string.Format(Resources.对比完成_共_0_个块不同_共_1_个字节不同, diffCount, diffBytes);
         }
 
         private string Compare()
         {
             StringBuilder stb = new StringBuilder();
             int diffCount = 0;
+            int diffBytes = 0;
             for (int i = 0; i < 16; i++)
             {
                 stb.AppendLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -203,6 +189,7 @@ namespace MifareOneTool
                         else
                         {
                             res += "## ";
+                            diffBytes++;
                         }
                     }
                     stb.AppendLine("A: " + Utils.Hex2StrWithSpan(sa.Sectors[i].Block[a]));
@@ -215,7 +202,8 @@ namespace MifareOneTool
                 }
 
             }
-            return Resources.共找到 + diffCount.ToString() + Resources._个块不同 + stb.ToString();
+            return string.Format(Resources.对比完成_共_0_个块不同_共_1_个字节不同, diffCount, diffBytes)
+                + Environment.NewLine + stb.ToString();
         }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)

@@ -239,9 +239,12 @@ namespace MifareOneTool
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // 初始化并应用主题
+            // 初始化主题；仅暗色模式在启动时应用，亮色模式保留 Designer 原始配色
             ThemeManager.Initialize();
-            ThemeManager.ApplyTheme(this);
+            if (Properties.Settings.Default.DarkTheme)
+            {
+                ThemeManager.ApplyTheme(this);
+            }
 
             logAppend(Resources._软件版本 + Assembly.GetExecutingAssembly().GetName().Version.ToString());
             localVersionLabel.Text = Resources.本地版本 + Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -982,7 +985,7 @@ namespace MifareOneTool
             if (lprocess) { return; }
             ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/nfc-mfclassic.exe");
             string[] args = (string[])e.Argument;
-            psi.Arguments = "c " + args[1] + " u \"" + args[0] + "\"";
+            psi.Arguments = "W " + args[1] + " u \"" + args[0] + "\"";
             if (keymfd != "" && args[2] == "")
             {
                 psi.Arguments += " \"" + keymfd + "\" f";
@@ -1008,7 +1011,14 @@ namespace MifareOneTool
                 cuidKeyOver = false;
                 File.Delete("cuid_empty.kmf");
             }
-            b.ReportProgress(100, Resources._运行完毕);
+            if (process.ExitCode == 0)
+            {
+                b.ReportProgress(100, Resources._运行完毕);
+            }
+            else
+            {
+                b.ReportProgress(100, Resources._运行出错);
+            }
         }
 
         private void buttonKill_Click(object sender, EventArgs e)
@@ -1274,14 +1284,8 @@ namespace MifareOneTool
             process.WaitForExit();
             File.Delete("dummy.tmp");
             lprocess = false; running = false;
-            if (process.ExitCode == 0)
-            {
-                b.ReportProgress(100, Resources._运行完毕);
-            }
-            else
-            {
-                b.ReportProgress(100, Resources._运行出错);
-            }
+            // mfdetect 为检测用途（工具输出已实时打印在日志），不按退出码报错
+            b.ReportProgress(100, Resources._运行完毕);
         }
 
         private void buttonHexTool_Click(object sender, EventArgs e)
@@ -1448,8 +1452,10 @@ namespace MifareOneTool
                 }
                 else
                 {
-                    // libnfc_hardnested.exe 参数格式: -K <key> -D <block>:<type> -d <block>:<type>
+                    // mfoc-hardnested 参数格式: -k <key>，输出文件在 Hardnest() 中以 -O 追加
                     hardargs = fhn.GetArg();
+                    lastuid = checkBoxAutoSave.Checked ? GetUID() : "";
+                    omfd = "Hardnested.tmp";
                     bgw.DoWork += new DoWorkEventHandler(Hardnest);
                 }
                 bgw.WorkerReportsProgress = true;
@@ -1464,12 +1470,13 @@ namespace MifareOneTool
         void Hardnest(object sender, DoWorkEventArgs e)
         {
             if (lprocess) { return; }
-            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/libnfc_hardnested.exe");
+            ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/mfoc-hardnested.exe");
+            string hardargs = (string)e.Argument;
             if (Properties.Settings.Default.HardLowCost)
             {
-                psi.FileName = "nfc-bin/libnfc_hardnestedlc.exe";
+                hardargs += "-Z ";
             }
-            psi.Arguments = (string)e.Argument;
+            psi.Arguments = hardargs + "-O \"" + omfd + "\"";
             psi.CreateNoWindow = true;
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
@@ -1487,10 +1494,15 @@ namespace MifareOneTool
             lprocess = false; running = false;
             if (process.ExitCode == 0)
             {
-                b.ReportProgress(100, Resources._运行完毕);
+                b.ReportProgress(101, Resources._运行完毕);
             }
             else
             {
+                if (omfd != "")
+                {
+                    File.Delete(omfd);
+                    omfd = "";
+                }
                 b.ReportProgress(100, Resources._运行出错);
             }
         }

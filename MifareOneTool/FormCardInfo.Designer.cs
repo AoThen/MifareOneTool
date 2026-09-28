@@ -114,7 +114,6 @@ namespace MifareOneTool
             this.Name = "FormCardInfo";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Load += new System.EventHandler(this.FormCardInfo_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSectors)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

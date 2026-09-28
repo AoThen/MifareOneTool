@@ -19,6 +19,7 @@ namespace MifareOneTool
         public FormCardInfo()
         {
             InitializeComponent();
+            InitDataGridView();
         }
 
         public void LoadCard(string file)
@@ -174,11 +175,6 @@ namespace MifareOneTool
                     default: return "???";
                 }
             }
-        }
-
-        private void FormCardInfo_Load(object sender, EventArgs e)
-        {
-            InitDataGridView();
         }
 
         private void InitDataGridView()

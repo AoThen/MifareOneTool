@@ -22,19 +22,19 @@ MifareOneTool/
 │   ├── mfoc/                  # MFOC 暗文攻击
 │   ├── mfcuk/                 # MFCUK 暴力破解
 │   ├── mfoc-hardnested/       # HardNested 攻击
-│   └── build-tools.sh         # 统一构建脚本
+│   └── build-tools.sh         # 本地辅助构建脚本（CI 使用 workflow 内联脚本）
 └── MifareOneTool/             # 主项目目录
     ├── Program.cs             # 应用程序入口
     ├── Form1.cs               # 主窗体（核心业务逻辑）
     ├── Form1.Designer.cs      # 主窗体设计器
     ├── ClassMifareS50.cs      # M1卡数据模型与工具类
-    ├── SelectLanguage.cs      # 语言选择窗体
     ├── FormDiff.cs            # 卡片数据对比工具
     ├── FormHardNes.cs         # HardNested 攻击配置窗体
     ├── FormHTool.cs           # 十六进制编辑器窗体
     ├── FormMFF08.cs           # MFF08 卡片操作窗体
+    ├── FormCardInfo.cs        # 卡片信息预览窗体
     ├── Properties/            # 项目属性与资源
-    │   ├── Resources.*.resx   # 多语言资源文件（中/英/俄）
+    │   ├── Resources.*.resx   # 资源文件（界面固定简体中文）
     │   └── Settings.settings  # 用户设置
     └── Resources/             # 图标与图片资源
 ```
@@ -97,12 +97,12 @@ MifareOneTool/
 │  卡片写入                                                     │
 │    ├── 普通写入 (nfc-mfclassic w)                            │
 │    ├── UID卡写入 (nfc-mfclassic W)                           │
-│    └── CUID/FUID写入 (nfc-mfclassic c)                       │
+│    └── CUID/FUID写入 (nfc-mfclassic W)                       │
 ├──────────────────────────────────────────────────────────────┤
 │  密钥破解                                                     │
 │    ├── MFOC 暗文攻击 (mfoc)                                  │
 │    ├── MFCUK 暴力破解 (mfcuk)                                │
-│    ├── HardNested 攻击 (libnfc_hardnested)                   │
+│    ├── HardNested 攻击 (mfoc-hardnested)                     │
 │    └── 字典攻击                                              │
 ├──────────────────────────────────────────────────────────────┤
 │  UID卡操作                                                    │
@@ -121,7 +121,7 @@ MifareOneTool/
 | `FormHTool` | MFD 文件的十六进制编辑器 |
 | `FormHardNes` | HardNested 攻击参数配置 |
 | `FormMFF08` | MFF08 特殊卡片操作 |
-| `SelectLanguage` | 语言选择界面 |
+| `FormCardInfo` | 卡片信息预览（扇区/密钥/访问控制） |
 
 ### 4. 外部工具调用
 
@@ -135,8 +135,8 @@ MifareOneTool/
 | `nfc-mfsetuid.exe` | UID卡号设置 |
 | `mfoc.exe` | MFOC 密钥破解 |
 | `mfcuk.exe` | MFCUK 暴力破解 |
-| `libnfc_hardnested.exe` | HardNested 攻击 |
-| `mfdetect.exe` | 卡片加密检测 |
+| `mfoc-hardnested.exe` | HardNested 攻击 |
+| `mfdetect.exe` | 卡片加密检测（复用 mfoc） |
 
 ### 5. 专有工具来源说明
 
@@ -177,7 +177,7 @@ x86_64-w64-mingw32-gcc -std=gnu99 -O3 libnfc_crypto1_crack.c \
 
 #### mff08.exe → nfc-mfclassic.exe
 
-mff08.exe 已被 `nfc-mfclassic.exe` 完全替代，两者功能完全相同：
+mff08.exe 已被 `nfc-mfclassic.exe` 替代，命令映射如下（`nfc-mfclassic` 不认识 mff08 的 `c`，代码中已映射为解锁写 `W`）：
 
 | 功能 | mff08.exe | nfc-mfclassic.exe |
 |------|:---------:|:-----------------:|
@@ -186,6 +186,7 @@ mff08.exe 已被 `nfc-mfclassic.exe` 完全替代，两者功能完全相同：
 | 解锁读取 | `R` | `R` |
 | 普通写入 | `w` | `w` |
 | 解锁写入 | `W` | `W` |
+| 克隆写入 | `c` | `W`（解锁写，含 block0/UID） |
 | A/B 密钥 | `a\|b\|A\|B` | `a\|b\|A\|B` |
 | UID 选择 | `u\|U<uid>` | `u\|U<uid>` |
 
@@ -244,7 +245,7 @@ external/
 ├── crypto1_bs/       # collect.exe (nonce 收集器)
 ├── mfoc/             # MFOC 暗文攻击
 ├── mfcuk/            # MFCUK 暴力破解
-└── build-tools.sh    # 统一构建脚本
+└── build-tools.sh    # 本地辅助构建脚本（CI 使用 workflow 内联脚本）
 ```
 
 | Submodule | 上游仓库 | 构建产物 |

@@ -10,18 +10,8 @@ A GUI Mifare Classic tool on Windows
 - UID/CUID/FUID/UFUID 卡片支持
 - MFD 文件十六进制编辑器
 - 卡片数据对比工具
-- 多语言支持（中文/英文/俄文）
-
-## 截图
-
-<!-- 截图占位，请替换为实际截图 -->
-| 主界面 | 高级模式 |
-|:------:|:--------:|
-| ![主界面](docs/screenshot_main.png) | ![高级模式](docs/screenshot_adv.png) |
-
-| Hex编辑器 | 数据对比 |
-|:---------:|:--------:|
-| ![Hex编辑器](docs/screenshot_hex.png) | ![数据对比](docs/screenshot_diff.png) |
+- 卡片信息预览（扇区/密钥/访问控制）
+- 简体中文界面
 
 ## 支持的硬件
 
@@ -30,7 +20,7 @@ A GUI Mifare Classic tool on Windows
 | 设备 | 状态 | 说明 |
 |------|:----:|------|
 | PN532 (UART) | ✅ 已支持 | 推荐，稳定可靠 |
-| ACR122U | ✅ 已支持 | 需手动切换 DLL（高级模式中启用） |
+| ACR122U | ⚠️ 暂未内置 | 当前 CI 构建的 libnfc 禁用了 ACR122_USB 驱动，「打开 ACR122U 支持」暂不可用 |
 | ProxMark | ❌ 不支持 | 请使用专用软件 |
 
 ### 卡片类型
@@ -88,14 +78,11 @@ A GUI Mifare Classic tool on Windows
 
 ### Q: 支持 ACR122U 吗？
 
-支持，但需要手动切换：
-1. 进入「高级模式」
-2. 点击「打开 ACR122U 支持」
-3. 切换后可能影响操作速度
+暂不支持：当前发布的 libnfc 构建禁用了 ACR122_USB 驱动，「打开 ACR122U 支持」开关暂不可用。请使用 PN532 (UART) 读写器。
 
-### Q: 如何切换语言？
+### Q: 界面语言？
 
-首次启动会自动弹出语言选择，也可以在设置中修改。
+当前版本固定使用简体中文界面。
 
 ## 项目架构
 

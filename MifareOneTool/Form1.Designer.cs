@@ -61,6 +61,7 @@
             this.buttonConSave = new System.Windows.Forms.Button();
             this.buttonMfcuk = new System.Windows.Forms.Button();
             this.buttonHexTool = new System.Windows.Forms.Button();
+            this.buttonCardInfo = new System.Windows.Forms.Button();
             this.buttonDiffTool = new System.Windows.Forms.Button();
             this.toolTipHelp = new System.Windows.Forms.ToolTip(this.components);
             this.buttonCheckEncrypt = new System.Windows.Forms.Button();
@@ -132,7 +133,6 @@
             this.checkBoxAutoLoadKey = new System.Windows.Forms.CheckBox();
             this.checkBoxWriteProtect = new System.Windows.Forms.CheckBox();
             this.checkBoxCuidKeyOver = new System.Windows.Forms.CheckBox();
-            this.checkBoxDarkTheme = new System.Windows.Forms.CheckBox();
             this.checkBoxDarkTheme = new System.Windows.Forms.CheckBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
@@ -516,6 +516,16 @@
             this.buttonHexTool.UseVisualStyleBackColor = false;
             this.buttonHexTool.Click += new System.EventHandler(this.buttonHexTool_Click);
             // 
+            // buttonCardInfo
+            // 
+            resources.ApplyResources(this.buttonCardInfo, "buttonCardInfo");
+            this.buttonCardInfo.BackColor = System.Drawing.Color.DodgerBlue;
+            this.buttonCardInfo.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.buttonCardInfo.ForeColor = System.Drawing.Color.White;
+            this.buttonCardInfo.Name = "buttonCardInfo";
+            this.buttonCardInfo.UseVisualStyleBackColor = false;
+            this.buttonCardInfo.Click += new System.EventHandler(this.buttonCardInfo_Click);
+            // 
             // buttonDiffTool
             // 
             resources.ApplyResources(this.buttonDiffTool, "buttonDiffTool");
@@ -608,6 +618,7 @@
             // 
             resources.ApplyResources(this.flowLayoutPanel10, "flowLayoutPanel10");
             this.flowLayoutPanel10.Controls.Add(this.buttonHexTool);
+            this.flowLayoutPanel10.Controls.Add(this.buttonCardInfo);
             this.flowLayoutPanel10.Name = "flowLayoutPanel10";
             // 
             // flowLayoutPanel9
@@ -1521,6 +1532,7 @@
         private System.Windows.Forms.Button buttonKill;
         private System.Windows.Forms.Button buttonDiffTool;
         private System.Windows.Forms.Button buttonHexTool;
+        private System.Windows.Forms.Button buttonCardInfo;
         private System.Windows.Forms.Button buttonMfcuk;
         private System.Windows.Forms.ToolTip toolTipHelp;
         private System.Windows.Forms.GroupBox groupBox4;

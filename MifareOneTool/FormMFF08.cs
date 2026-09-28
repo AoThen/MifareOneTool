@@ -80,10 +80,10 @@ namespace MifareOneTool
         void cmf_write(object sender, DoWorkEventArgs e)
         {
             if (lprocess) { return; }
-            // 使用 nfc-mfclassic 替代 mff08.exe（功能完全相同）
+            // 使用 nfc-mfclassic 替代 mff08.exe（原 c 命令映射为解锁写 W，需写入 block0/UID）
             ProcessStartInfo psi = new ProcessStartInfo("nfc-bin/nfc-mfclassic.exe");
             string[] args = (string[])e.Argument;
-            psi.Arguments = "c " + args[1] + " u \"" + args[0] + "\"";
+            psi.Arguments = "W " + args[1] + " u \"" + args[0] + "\"";
             if (args[3] != "" && args[2] == "")
             {
                 psi.Arguments += " \"" + args[3] + "\" f";
@@ -103,7 +103,14 @@ namespace MifareOneTool
             process.BeginErrorReadLine();
             process.WaitForExit();
             lprocess = false;
-            b.ReportProgress(100, Resources._运行完毕);
+            if (process.ExitCode == 0)
+            {
+                b.ReportProgress(100, Resources._运行完毕);
+            }
+            else
+            {
+                b.ReportProgress(100, Resources._运行出错);
+            }
         }
 
         private void buttonKeyWrite_Click(object sender, EventArgs e)
