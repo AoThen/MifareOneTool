@@ -29,12 +29,20 @@
 
 inline uint32_t *MALLOC_BITARRAY(uint32_t x)
 {
+#ifdef _WIN32
+	return (uint32_t *)_aligned_malloc(x, 32);
+#else
 	return memalign(32, (x));
+#endif
 }
 
 inline void FREE_BITARRAY(uint32_t *x)
 {
+#ifdef _WIN32
+	_aligned_free((void *)x);
+#else
 	free(x);
+#endif
 }
 
 inline uint32_t BITCOUNT(uint32_t a)
@@ -135,11 +143,19 @@ inline uint32_t COUNT_BITARRAY_AND4(uint32_t *restrict A, uint32_t *restrict B, 
 }
 
 uint32_t *malloc_bitarray(uint32_t x) {
+#ifdef _WIN32
+	return (uint32_t *)_aligned_malloc(x, 32);
+#else
 	return memalign(32, (x));
+#endif
 }
 
 void free_bitarray(uint32_t *x) {
+#ifdef _WIN32
+	_aligned_free((void *)x);
+#else
 	free(x);
+#endif
 }
 
 uint32_t bitcount(uint32_t a) {

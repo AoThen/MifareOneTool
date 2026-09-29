@@ -66,8 +66,12 @@ static inline uint64_t msclock(void) {
 }
 
 static inline uint8_t num_CPUs(void) {
-	long n = sysconf(_SC_NPROCESSORS_ONLN);
-	return (n > 0) ? (uint8_t)n : 4;
+#ifdef _WIN32
+    return 4;
+#else
+    long n = sysconf(_SC_NPROCESSORS_ONLN);
+    return (n > 0) ? (uint8_t)n : 4;
+#endif
 }
 
 static inline const char *get_my_executable_directory(void) {

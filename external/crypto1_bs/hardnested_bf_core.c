@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
+#include <malloc.h>
+#endif
 #include "crapto1.h"
 #include "parity.h"
 
@@ -58,14 +61,27 @@ typedef union {
 
 static void *xmalloc_aligned(size_t x, size_t align) {
     void *p;
+#ifdef _WIN32
+    p = _aligned_malloc(x, align);
+    if (!p) {
+        printf("Out of memory error. Aborting...\n");
+        exit(4);
+    }
+    return p;
+#else
     if (posix_memalign(&p, align, x) != 0) {
         printf("Out of memory error. Aborting...\n");
         exit(4);
     }
     return p;
+#endif
 }
 #define MALLOC_BITSICE(x) xmalloc_aligned((x), MAX_BITSLICES/8)
+#ifdef _WIN32
+#define FREE_BITSICE(x) _aligned_free(x)
+#else
 #define FREE_BITSICE(x) free(x)
+#endif
 
 static bitslice_t bitsliced_encrypted_nonces[256][KEYSTREAM_SIZE];
 static bitslice_t bitsliced_encrypted_parity_bits[256][4];
