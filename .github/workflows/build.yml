@@ -242,80 +242,42 @@ jobs:
           exit 1
         fi
 
-    - name: Build collect.exe (libnfc_crypto1_crack) from source
-      shell: msys2 {0}
-      run: |
-        set -e
-        echo "=== Building collect.exe (libnfc_crypto1_crack) from source (submodule) ==="
-        
-        # 设置 PKG_CONFIG_PATH 以找到 libnfc
-        export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
-        
-        cd external/crypto1_bs
-        
-        # 修补 Windows 兼容性: POSIX alarm/signal/fcntl 不存在于 Windows
-        echo "=== Patching for Windows compatibility ==="
-        python3 << 'EOF'
-        import re
-        
-        with open('libnfc_crypto1_crack.c', 'r') as f:
-            content = f.read()
-        
-        # Wrap POSIX-specific calls with #ifndef _WIN32 guards
-        replacements = [
-            (r'^    alarm\(1\);$', r'    #ifndef _WIN32\n    alarm(1);\n    #endif'),
-            (r'^    alarm\(0\);$', r'    #ifndef _WIN32\n    alarm(0);\n    #endif'),
-            (r'^            alarm\(0\);$', r'            #ifndef _WIN32\n            alarm(0);\n            #endif'),
-            (r'^    signal\(SIGALRM, notify_status_offline\);$', r'    #ifndef _WIN32\n    signal(SIGALRM, notify_status_offline);\n    #endif'),
-            (r'^    signal\(SIGALRM, notify_status_online\);$', r'    #ifndef _WIN32\n    signal(SIGALRM, notify_status_online);\n    #endif'),
-            (r'^    fcntl\(0, F_SETFL, O_NONBLOCK\);$', r'    #ifndef _WIN32\n    fcntl(0, F_SETFL, O_NONBLOCK);\n    #endif'),
-        ]
-        
-        for pattern, repl in replacements:
-            content = re.sub(pattern, repl, content, flags=re.MULTILINE)
-        
-        with open('libnfc_crypto1_crack.c', 'w') as f:
-            f.write(content)
-        
-        print("Patched successfully")
-        EOF
-        
-        # 下载 CraptEV1 和 Crapto1 依赖（从 GitHub mirror）
-        echo "=== Downloading CraptEV1 and Crapto1 dependencies ==="
-        curl -fsSL -o craptev1-v1.1.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/craptev1-v1.1.tar.xz"
-        curl -fsSL -o crapto1-v3.3.tar.xz "https://github.com/SnoopyTools/acr122uNFC/raw/master/crapto1-v3.3.tar.xz"
-        
-        # 解压
-        tar Jxvf craptev1-v1.1.tar.xz
-        mkdir -p crapto1-v3.3
-        tar Jxvf crapto1-v3.3.tar.xz -C crapto1-v3.3
-        
-        # 设置编译器为 MinGW64
-        export CC=x86_64-w64-mingw32-gcc
-        
-        # 编译 Windows 64 位版本 (动态链接 libnfc)
-        echo "=== Compiling libnfc_crypto1_crack for Windows ==="
-        ${CC} -std=gnu99 -O3 -march=x86-64 \
-          libnfc_crypto1_crack.c \
-          crypto1_bs.c crypto1_bs_crack.c \
-          crapto1-v3.3/crapto1.c crapto1-v3.3/crypto1.c \
-          craptev1-v1.1/craptev1.c \
-          -I /mingw64/include -I crapto1-v3.3/ -I craptev1-v1.1/ \
-          -L /mingw64/lib \
-          -o collect.exe \
-          -lpthread -lnfc -lm \
-          -Wl,--allow-multiple-definition
-        
-        # 检查编译结果
-        echo "=== Checking collect.exe build results ==="
-        if [ -f "collect.exe" ]; then
-          echo "✓ collect.exe built successfully"
-          ls -la collect.exe
-          file collect.exe
-        else
-          echo "✗ collect.exe not found!"
-          exit 1
-        fi
+- name: Build collect.exe (hardnested, no external deps)
+       shell: msys2 {0}
+       run: |
+         set -e
+         echo "=== Building collect.exe from Proxmark3 hardnested code ==="
+         
+         export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+         export CC=x86_64-w64-mingw32-gcc
+         
+         cd external/crypto1_bs
+         
+         # 创建 bitflip 表目录结构
+         mkdir -p hardnested/tables
+         cp -v tables/*.bin.z hardnested/tables/ 2>/dev/null || true
+         
+         echo "=== Compiling collect.exe for Windows ==="
+         ${CC} -std=gnu99 -O3 -march=x86-64 \
+           libnfc_crypto1_crack.c \
+           crypto1.c crapto1.c \
+           hardnested_bf_core.c hardnested_bitarray_core.c hardnested_bruteforce.c \
+           cmdhfmfhard.c parity.c \
+           -I . -I /mingw64/include -I /mingw64/include/libusb-1.0 \
+           -L /mingw64/lib \
+           -o collect.exe \
+           -lpthread -lnfc -lm -lz \
+           -Wl,--allow-multiple-definition
+         
+         echo "=== Checking collect.exe build results ==="
+         if [ -f "collect.exe" ]; then
+           echo "✓ collect.exe built successfully"
+           ls -la collect.exe
+           file collect.exe
+         else
+           echo "✗ collect.exe not found!"
+           exit 1
+         fi
 
     - name: Collect built tools
       shell: msys2 {0}
@@ -339,8 +301,12 @@ jobs:
         # 复制 mfoc-hardnested
         cp -v external/mfoc-hardnested/src/mfoc-hardnested.exe nfc-bin/mfoc-hardnested.exe 2>/dev/null || true
         
-        # 复制 collect.exe (libnfc_crypto1_crack)
-        cp -v external/crypto1_bs/collect.exe nfc-bin/collect.exe 2>/dev/null || true
+# 复制 collect.exe (libnfc_crypto1_crack)
+         cp -v external/crypto1_bs/collect.exe nfc-bin/collect.exe 2>/dev/null || true
+         
+         # 复制 bitflip 表
+         mkdir -p nfc-bin/hardnested/tables
+         cp -v external/crypto1_bs/tables/*.bin.z nfc-bin/hardnested/tables/ 2>/dev/null || true
         
         # 复制必要的 DLL
         cp -v /mingw64/bin/libnfc.dll nfc-bin/ 2>/dev/null || true
